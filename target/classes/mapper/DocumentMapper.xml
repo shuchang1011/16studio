@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.DocumentDao">
+
+	<resultMap type="com.entity.Document" id="ResultMap">
+		<id column="Id" property="id"/>
+		<result column="VillageId" property="villageId"/> 
+		<result column="CultureaspectId" property="cultureaspectId"/>
+		<result column="MemberId" property="memberId"/>
+		<result column="Title" property="title"/>
+		<result column="Description" property="description"/>
+		<result column="Type" property="type"/>
+		<result column="Path" property="path"/>
+		<result column="Content" property="content"/>
+		<result column="CreateDate" property="createDate"/>
+		<result column="UpdateDate" property="updateDate"/>
+		<result column="IsDeleted" property="isDeleted"/>
+	</resultMap>
+	
+	<resultMap type="com.entity.TempDoc" id="TempDocResult">
+		<id column="Id" property="id"/>
+		<result column="VillageId" property="villageId"/> 
+		<result column="CultureaspectId" property="cultureaspectId"/>
+		<result column="CreateMemberId" property="createMemberId"/> 
+		<result column="AuditMemberId" property="auditMemberId"/>
+		<result column="FileMemberId" property="fileMemberId"/>
+		<result column="FileId" property="fileId"/>
+		<result column="Title" property="title"/>
+		<result column="Description" property="description"/>
+		<result column="Type" property="type"/>
+		<result column="Format" property="format"/>
+		<result column="Path" property="path"/>
+		<result column="Content" property="content"/>
+		<result column="State" property="state"/>
+		<result column="Problem" property="problem"/>
+		<result column="IsSubmited" property="isSubmited"/>
+		<result column="IsApproved" property="isApproved"/>
+		<result column="IsArchived" property="isArchived"/>
+		<result column="CreateDate" property="createDate"/>
+		<result column="SubmitDate" property="submitDate"/>
+		<result column="AuditDate" property="auditDate"/>
+		<result column="FileDate" property="fileDate"/>
+		<result column="UpdateDate" property="updateDate"/>
+		<result column="IsDeleted" property="isDeleted"/>
+	</resultMap>
+	
+	<select id="findOne" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from document where Id = #{documentId} and IsDeleted = '0'
+	</select>
+	
+	<select id="findTempDoc" resultMap="TempDocResult" parameterType="java.lang.String">
+		select * from temp_document where FileId like (
+			select FileId from temp_document where Id = #{tempDocId}
+		)
+	</select>
+	
+	<select id="findTempDocById" resultMap="TempDocResult" parameterType="java.lang.String">
+		select * from temp_document where Id = #{id}
+	</select>
+	
+	<select id="findTempDocByType" resultMap="TempDocResult" parameterType="java.lang.String">
+		select * from temp_document where Type = #{type} and IsDeleted = '0'
+	</select>
+	
+	<select id="findTempDocByCreateMemberId" resultMap="TempDocResult" parameterType="java.lang.String">
+		select * from temp_document where CreateMemberId = #{createMemberId} and IsDeleted = '0'
+	</select>
+	
+	<select id="findTempDocByVillageIdAndCultureaspectId" resultMap="TempDocResult" parameterType="java.lang.String">
+		select * from temp_document where VillageId = #{villageId} and CultureaspectId = #{cultureaspectId} and IsArchived = '0' and IsDeleted = '0'
+	</select>
+	
+	<select id="findUnSubmitTempDoc" resultMap="TempDocResult" parameterType="java.lang.String">
+		select * from temp_document where CreateMemberId = #{createMemberId} and IsSubmited = '0' and IsArchived = '0' and IsDeleted = '0'
+	</select>
+	
+	<select id="findSubmitTempDoc" resultMap="TempDocResult" parameterType="java.lang.String">
+		select * from temp_document where AuditMemberId = #{auditMemberId} and IsSubmited = '1' and IsArchived = '0' and IsDeleted = '0'
+	</select>
+	
+	<select id="findPassedTempDoc" resultMap="TempDocResult" parameterType="java.lang.String">
+		select * from temp_document where FileMemberId = #{fileMemberId} and IsApproved = '1' and IsArchived = '0' and IsDeleted = '0'
+	</select>
+	
+	<select id="findAll" resultMap="ResultMap">
+		select * from document where IsDeleted = '0'
+	</select>
+	
+	<select id="findByVillage" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from document where VillageId = #{villageId} and IsDeleted = '0'
+	</select>
+	
+	<select id="findByType" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from document where Type = #{type} and IsDeleted = '0'
+	</select>
+	
+	<select id="findByTitle" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from document where IsDeleted = '0' and Title like "%"#{title}"%"
+	</select>
+	
+	<select id="findAllByVillageIdAndCultureaspectId" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from document where VillageId = #{villageId} and CultureaspectId = #{cultureaspectId} and IsDeleted = '0'
+	</select>
+	
+	<insert id="createDocument" parameterType="com.entity.Document">
+		insert into document(Id,VillageId,CultureaspectId,MemberId,Title,Description,Type,Path,Content,CreateDate,UpdateDate,IsDeleted)
+		values(
+				uuid(),
+				#{villageId},
+				#{cultureaspectId},
+				#{memberId},
+				#{title},
+				#{description},
+				#{type},
+				#{path},
+				#{content},
+				now(6),
+				null,
+				'0'
+			)
+	</insert>
+	
+	<insert id="createTempDocument" parameterType="com.entity.TempDoc">
+		insert into temp_document(Id,VillageId,CultureaspectId,CreateMemberId,AuditMemberId,FileMemberId,FileId,Title,Description,Type,Format,Path,Content,State,Problem,IsSubmited,IsApproved,IsArchived,CreateDate,SubmitDate,AuditDate,FileDate,UpdateDate,IsDeleted)
+		values(
+				uuid(),
+				#{villageId},
+				#{cultureaspectId},
+				#{createMemberId},
+				#{auditMemberId},
+				#{fileMemberId},
+				#{fileId},
+				#{title},
+				#{description},
+				#{type},
+				#{format},
+				#{path},
+				#{content},
+				null,
+				null,
+				'0',
+				'0',
+				'0',
+				now(6),
+				null,
+				null,
+				null,
+				null,
+				'0'
+			)
+	</insert>
+	
+	<insert id="archiveToDocument" parameterType="com.entity.TempDoc">
+		insert into document(Id,VillageId,CultureaspectId,MemberId,Title,Description,Type,Path,Content,CreateDate,UpdateDate,IsDeleted)
+		values(
+				uuid(),
+				#{villageId},
+				#{cultureaspectId},
+				#{createMemberId},
+				#{title},
+				#{description},
+				#{type},
+				#{path},
+				#{content},
+				now(6),
+				null,
+				'0'
+			)
+	</insert>
+	
+	<update id="submitTempDoc" parameterType="java.lang.String">
+		update temp_document
+		set IsSubmited = '1', SubmitDate = now(6)
+		where isDeleted = '0' and FileId like (
+			select a.FileId from (
+				select FileId from temp_document where Id = #{tempDocId}
+			)a
+		)
+	</update>
+	
+	<update id="tempDocPass" parameterType="java.lang.String">
+		update temp_document
+		<set>
+			<if test="state!=null">State = #{state},</if>
+		</set>
+		,IsApproved = '1',AuditDate = now(6) 
+		where isDeleted = '0' and FileId like (
+			select a.FileId from (
+				select FileId from temp_document where Id = #{tempDocId}
+			)a
+		)
+	</update>
+	
+	<update id="tempDocUnPass" parameterType="java.lang.String">
+		update temp_document
+		<set>
+			<if test="state!=null">State = #{state},</if>
+		</set>
+		,IsSubmited = '0',AuditDate = now(6) 
+		where isDeleted = '0' and FileId like (
+			select a.FileId from (
+				select FileId from temp_document where Id = #{tempDocId}
+			)a
+		)
+	</update>
+	
+	<update id="archiveTempDoc" parameterType="java.lang.String">
+		update temp_document
+		<set>
+			<if test="state!=null">State = #{state},</if>
+		</set>
+		,IsArchived = '1',FileDate = now(6) where isDeleted = '0' and FileId like (
+			select a.FileId from (
+				select FileId from temp_document where Id = #{tempDocId}
+			)a
+		)
+	</update>
+	
+	<update id="unArchiveTempDoc" parameterType="java.lang.String">
+		update temp_document
+		<set>
+			<if test="state!=null">State = #{state},</if>
+		</set>
+		,IsApproved = '0',IsSubmited = '0' where isDeleted = '0' and FileId like (
+			select a.FileId from (
+				select FileId from temp_document where Id = #{tempDocId}
+			)a
+		)
+	</update>
+
+	<update id="updateDocument" parameterType="com.entity.Document">
+		update document 
+		<set>
+			<if test="title!=null">Title = #{title},</if>
+			<if test="description!=null">Description = #{description},</if>
+		</set>
+		,UpdateDate = now(6) where Id = #{id} IsDeleted = '0'
+	</update>
+	
+	<update id="updateTempDoc" parameterType="com.entity.TempDoc">
+		update temp_document 
+		<set>
+			<if test="title!=null">Title = #{title},</if>
+			<if test="description!=null">Description = #{description},</if>
+			<if test="path!=null">Path = #{path},</if>
+			<if test="content!=null">Content = #{content},</if>
+		</set>
+		,UpdateDate = now(6) where Id = #{id} and IsDeleted = '0'
+	</update>
+	
+	<update id="deleteDocument" parameterType="java.lang.String">
+		update document set IsDeleted = '1' where Id = #{documentId}
+	</update>
+	
+	<delete id="deleteTempDoc" parameterType="java.lang.String">
+		delete from temp_document where FileId like (
+			select a.FileId from (
+				select FileId from temp_document where Id = #{tempDocId}
+			)a
+		)
+	</delete>
+
+</mapper>

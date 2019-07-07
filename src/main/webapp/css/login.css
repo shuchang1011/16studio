@@ -1,0 +1,69 @@
+*{
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+}
+body{
+    background: white;
+}
+#container{
+    width: 100%;
+    height: 770px;
+    background-image: url("../images/background.png");
+}
+.title{
+    width: 1920px;
+    font-size: xx-large;
+    color: #ff0000;
+}
+.dlBox{
+    position: relative;
+    top: 15px;
+    width: 400px;
+    padding-top: 20px;
+    height: 180px;
+    border: 1px solid black;
+}
+h2{
+    width: 100%;
+    color: #E7BBD1;
+}
+.useNum{
+    width: 100%;
+    margin: 10px 0;
+}
+input{
+    border: 1px solid #DDDDDD;
+    height: 28px;
+}
+.dl{
+    width: 80%;
+    height: 50px;
+    margin-top: 10px;
+    background-color:#EF5B00;
+    color: white;
+    size: 150px;
+}
+.box{
+    position: relative;
+    top: 190px;
+    left: -13px;
+    width: 410px;
+    height: 240px;
+    background-color: white;
+}
+#user{
+    position: relative;
+    top:0px;
+    left: 0px;
+    width: 400px;
+    height: 100px;
+    /* background-color: aqua; */
+}
+.item_account{
+    padding-left: 5%;
+    text-align: start;
+    margin-top: 10px;
+    width: 75%;
+    height: 50px;
+}

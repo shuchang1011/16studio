@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.RoleDao">
+
+	<resultMap type="com.entity.Role" id="ResultMap">
+		<id column="Id" property="id"/>
+		<result column="Name" property="name"/>
+		<result column="CreateDate" property="createDate"/>
+		<result column="UpdateDate" property="updateDate"/>
+		<result column="IsDeleted" property="isDeleted"/>
+	</resultMap>
+
+	<select id="findOne" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from role where Id = #{roleId} and IsDeleted = '0'
+	</select>
+	
+	<select id="findAll" resultMap="ResultMap">
+		select * from role where IsDeleted = '0'
+	</select>
+	
+	<select id="findAllOverLevel" resultMap="ResultMap">
+		select * from role where Level >=  #{level}
+	</select>
+	
+	<insert id="createRole" parameterType="com.entity.Role">
+		insert into role(Id,Name,CreateDate,UpdateDate,IsDeleted)
+		values(
+				uuid(),
+				#{name},
+				now(6),
+				null,
+				'0'
+				)
+	</insert>
+	
+	<update id="updateRole" parameterType="com.entity.Role">
+		update role set Name = #{name},UpdateDate = now(6) where Id = #{id}
+	</update>
+	
+	<update id="deleteRole" parameterType="java.lang.String">
+		update role set IsDeleted = '1' where Id = #{roleId}
+	</update>
+
+</mapper>

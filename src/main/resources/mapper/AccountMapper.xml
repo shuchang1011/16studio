@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.AccountDao">
+
+	<resultMap type="com.entity.Account" id="ResultMap">
+		<id column="Id" property="id"/>
+		<result column="AccountName" property="accountName"/>
+		<result column="DisplayName" property="displayName"/>
+		<result column="Password" property="password"/>
+		<result column="CreateDate" property="createDate"/>
+		<result column="UpdateDate" property="updateDate"/>
+		<result column="IsDeleted" property="isDeleted"/>
+	</resultMap>
+	 
+	<select id="findOne" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from account where Id = #{accountId} and IsDeleted = '0'
+	</select>
+
+	<select id="findAll" resultMap="ResultMap">
+		select * from account where IsDeleted = '0' order by Id 
+	</select>
+	
+	<select id="findAllInOrganization" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from account where IsDeleted = '0' and Id in (
+			select AccountId from member where IsDeleted = '0' and organizationId = #{organizationId}
+															)
+	</select>
+	
+	<select id="findByAccountName" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from account where AccountName = #{accountName} and IsDeleted = '0'
+	</select>
+	
+	<select id="findRoleIdByAccountId" resultType="java.lang.String" parameterType="java.lang.String">
+		select RoleId from rolemember where MemberId in 
+		(select Id from member where AccountId = #{accountId} and IsDeleted = '0')
+	</select>
+
+	<insert id="createAccount" parameterType="com.entity.Account">
+		insert into account(Id,AccountName,DisplayName,Password,CreateDate,UpdateDate,IsDeleted)
+		values(
+			uuid(),
+			#{accountName},
+			#{displayName},
+			#{password},
+			now(6),
+			null,
+			'0'
+			)
+	</insert>
+	
+	<update id="updateAccount" parameterType="com.entity.Account">
+		update account
+		<set>
+			<if test="accountName != null">AccountName = #{accountName},</if>
+			<if test="displayName != null">DisplayName = #{displayName},</if>
+			<if test="password != null">Password = #{password},</if>
+		</set>
+		 ,UpdateDate = now(6)
+		 where Id = #{id} and IsDeleted = '0'
+	</update>
+
+	<update id="deleteAccount" parameterType="java.lang.String">
+		update account set IsDeleted = '1' where Id = #{accountId}
+	</update>
+
+</mapper>

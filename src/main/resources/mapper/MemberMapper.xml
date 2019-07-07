@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.MemberDao">
+
+	<resultMap type="com.entity.Member" id="ResultMap">
+		<id column="Id" property="id"/>
+		<result column="AccountId" property="accountId"/> 
+		<result column="OrganizationId" property="organizationId"/>
+		<result column="Mobile" property="mobile"/>
+		<result column="Email" property="email"/>
+		<result column="CreateDate" property="createDate"/>
+		<result column="UpdateDate" property="updateDate"/>
+		<result column="IsDeleted" property="isDeleted"/>
+	</resultMap>
+	
+	<select id="findOneByAccountId" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from member where AccountId = #{accountId} and IsDeleted = '0'
+	</select>
+	
+	<select id="findOne" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from member where Id = #{memberId} and IsDeleted = '0'
+	</select>
+	
+	<select id="findScholarInTask" resultType="java.lang.String" parameterType="java.lang.String">
+		select MemberId from task_member where TaskId = #{taskId} and MemberId in(
+			select MemberId from rolemember where RoleId in(
+				select Id from role where Name = "学者"
+			)
+		)
+	</select>
+	
+	<select id="findFreeScholarByOrganizationId" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from member where OrganizationId = #{organizationId} and IsDeleted = '0' and Id in(
+			select MemberId from rolemember where RoleId in(
+				select Id from role where Name = "学者"
+			)
+		) and Id not in (
+			select MemberId from task_member where TaskId in(
+				select Id from task where OrganizationId =  #{organizationId}
+			)
+		) 
+	</select>
+	
+	<select id="findFreeInputorByOrganizationId" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from member where OrganizationId = #{organizationId} and IsDeleted = '0' and Id in(
+			select MemberId from rolemember where RoleId in(
+				select Id from role where Name = "录入员"
+			)
+		) and Id not in (
+			select MemberId from task_member where TaskId in(
+				select Id from task where OrganizationId =  #{organizationId}
+			)
+		) 
+	</select>
+	
+	<select id="findAllByOrganizationId" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from member where OrganizationId = #{organizationId} and IsDeleted = '0'
+	</select>
+	
+	<select id="findAll" resultMap="ResultMap">
+		select * from member
+	</select>
+	
+	<insert id="createMember" parameterType="com.entity.Member">
+		insert into member(Id,AccountId,OrganizationId,Gender,Age,Mobile,Email,CreateDate,UpdateDate,IsDeleted)
+		values(
+				uuid(),
+				#{accountId},
+				#{organizationId},
+				#{gender},
+				#{age},
+				#{mobile},
+				#{email},
+				now(6),
+				null,
+				'0'
+			)
+	</insert>
+	
+	<insert id="createRoleMember" parameterType="java.lang.String">
+		insert into rolemember(Id,RoleId,MemberId)
+		values(
+				uuid(),
+				#{roleId},
+				#{memberId}
+			)
+	</insert>
+	
+	<update id="updateMember" parameterType="com.entity.Member">
+		update member 
+		<set>
+			<if test="organizationId!=null">OrganizationId = #{organizationId},</if>
+			<if test="gender!=null">Gender = #{gender},</if>
+			<if test="age!=null">Age = #{age},</if>
+			<if test="mobile!=null">Mobile = #{mobile},</if>
+			<if test="email!=null">Email = #{email},</if>
+		</set>
+		,UpdateDate = now(6) where AccountId = #{accountId} and IsDeleted = '0' 
+	</update>
+	
+	<update id="updateRoleMember" parameterType="java.lang.String">
+		update rolemember set RoleId = #{roleId} where MemberId = #{memberId}
+	</update>
+	
+	<update id="deleteMember" parameterType="java.lang.String">
+		update member set IsDeleted = '1' where Id = #{memberId}
+	</update>
+	
+	<delete id="deleteRoleMember" parameterType="java.lang.String">
+		delete from rolemember where MemberId = #{memberId}
+	</delete>
+	
+</mapper>

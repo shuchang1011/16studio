@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.VillageDao">
+
+	<resultMap type="com.entity.Village" id="ResultMap">
+		<id column="Id" property="id"/>
+		<result column="Name" property="name"/>
+		<result column="Location" property="location"/>
+		<result column="Description" property="description"/>
+		<result column="OrganizationId" property="organizationId"/>
+		<result column="CreateDate" property="createDate"/>
+		<result column="UpdateDate" property="updateDate"/>
+		<result column="IsDeleted" property="isDeleted"/>
+	</resultMap>
+
+	<select id="findOne" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from village where Id = #{villageId} and IsDeleted = '0'
+	</select>
+	
+	<select id="findOneByName" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from village where Name = #{name} and IsDeleted = '0'
+	</select>
+	
+	<select id="findAll" resultMap="ResultMap">
+		select * from village where IsDeleted = '0'
+	</select>
+	
+	<select id="findAllByOrganizationId" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from village where OrganizationId = #{organizationId} and IsDeleted = '0'
+	</select>
+	
+	<select id="findDeletedVillage" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from village where OrganizationId = #{organizationId} and IsDeleted = '1'
+	</select>
+	
+	<select id="findAllDeletedVillage" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from village where IsDeleted = '1'
+	</select>
+	
+	<insert id="createVillage" parameterType="com.entity.Village">
+		insert into village(Id,Name,Location,Description,OrganizationId,CreateDate,UpdateDate,IsDeleted)
+		values(
+				uuid(),
+				#{name},
+				#{location},
+				#{description},
+				#{organizationId},
+				now(6),
+				null,
+				'0'
+			)
+	</insert>
+	
+	<update id="updateVillage" parameterType="com.entity.Village">
+		update village 
+		<set>
+			<if test="name!=null">Name = #{name},</if>
+			<if test="location!=null">Location = #{location},</if>
+			<if test="description!=null">Description = #{description},</if>
+		</set>
+		,UpdateDate = now(6) where Id = #{id} and IsDeleted = '0'
+	</update>
+	
+	<update id="deleteVillage" parameterType="java.lang.String">
+		update village set IsDeleted = '1' where Id = #{villageId}
+	</update>
+
+</mapper>

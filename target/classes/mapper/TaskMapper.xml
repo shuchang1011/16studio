@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.TaskDao">
+
+	<resultMap type="com.entity.Task" id="ResultMap">
+		<id column="Id" property="id" />
+		<result column="OrganizationId" property="organizationId" />
+		<result column="VillageId" property="villageId" />
+		<result column="CultureaspectId" property="cultureaspectId" />
+		<result column="CreateMemberId" property="createMemberId" />
+		<result column="Title" property="title" />
+		<result column="Content" property="content" />
+		<result column="FileType" property="fileType" />
+		<result column="IsFinished" property="isFinished" />
+		<result column="FinishedDate" property="finishedDate" />
+		<result column="CreateDate" property="createDate" />
+		<result column="UpdateDate" property="updateDate" />
+		<result column="IsDeleted" property="isDeleted" />
+		<association property="village" javaType="com.entity.Village">
+			<id property="id" column="Id"></id>
+			<result property="name" column="Name"></result>
+			<result property="location" column="Location"></result>
+		</association>
+		<collection property="member" javaType="ArrayList" ofType="com.entity.Member" fetchType="lazy">
+			<id column="m_id" property="id" />
+			<result column="AccountId" property="accountId" />
+			<result column="OrganizationId" property="organizationId" />
+			<result column="Mobile" property="mobile" />
+			<result column="Email" property="email" />
+			<result column="CreateDate" property="createDate" />
+			<result column="UpdateDate" property="updateDate" />
+			<result column="IsDeleted" property="isDeleted" />
+			<association property="account" javaType="com.entity.Account">
+				<result property="displayName" column="DisplayName"/>
+			</association>
+		</collection>
+	</resultMap>
+
+	<select id="findOne" resultMap="ResultMap" parameterType="java.lang.String">
+		select * from task where Id = #{taskId}  and IsDeleted = '0'
+	</select>
+
+	<select id="findTaskByVillage" resultMap="ResultMap"
+		parameterType="java.lang.String">
+		select a.*,b.Id m_id,b.AccountId,b.OrganizationId,b.Mobile,b.Email,b.CreateDate,b.UpdateDate,b.IsDeleted 
+		from task a,member b,task_member c 
+		where a.Id = c.TaskId and b.Id = c.MemberId and a.VillageId = #{villageId} and IsFinished = '0' and a.IsDeleted = '0'
+	</select>
+
+	<select id="findTaskByVillageAndCultureaspect" resultMap="ResultMap"
+		parameterType="java.lang.String">
+		select a.*,b.Id m_id,b.AccountId,b.OrganizationId,b.Mobile,b.Email,b.CreateDate,b.UpdateDate,b.IsDeleted 
+		from task a,member b,task_member c 
+		where a.Id = c.TaskId and b.Id = c.MemberId and a.VillageId = #{villageId} and CultureaspectId = #{cultureaspectId} and IsFinished = '0' and a.IsDeleted = '0'
+	</select>
+
+	<select id="findMemberInTask" resultType="java.lang.String"
+		parameterType="java.lang.String">
+		select MemberId from task_member where TaskId = #{taskId}
+	</select>
+	
+	<select id="findAllByOrganizationId" resultMap="ResultMap"
+		parameterType="java.lang.String">
+		select * from task where OrganizationId = #{organizationId} and IsDeleted = '0'
+	</select>
+
+	<select id="findAllByMemberId" resultMap="ResultMap"
+		parameterType="java.lang.String">
+		select * from task where Id in (
+			select TaskId from task_member where MemberId = #{memberId}
+		)
+	</select>
+
+	<select id="findAll" resultMap="ResultMap">
+		select * from task where IsDeleted = '0'
+	</select>
+
+	<select id="findFinishedTask" resultMap="ResultMap"
+		parameterType="java.lang.String">
+		select a.*,b.Name
+		from task a,village b
+		where a.OrganizationId = #{organizationId} and a.VillageId = b.Id and a.IsFinished = '1' and a.IsDeleted = '0'
+	</select>
+
+	<select id="findUnFinishedTask" resultMap="ResultMap"
+		parameterType="java.lang.String">
+		select a.*,b.Id m_id,b.AccountId,b.OrganizationId,b.Mobile,b.Email,b.CreateDate,b.UpdateDate,b.IsDeleted,d.DisplayName,e.Name 
+		from task a,member b,task_member c,account d,village e 
+		where a.Id = c.TaskId and b.Id = c.MemberId and a.VillageId = e.Id and b.AccountId = d.Id and 
+		a.OrganizationId = #{organizationId} and a.IsFinished = '0' and a.IsDeleted = '0'
+	</select>
+
+	<insert id="createTask" parameterType="com.entity.Task">
+		insert into
+		task(Id,OrganizationId,VillageId,CultureaspectId,CreateMemberId,Title,Content,FileType,IsFinished,FinishedDate,CreateDate,UpdateDate,IsDeleted)
+		values(
+		#{id},
+		#{organizationId},
+		#{villageId},
+		#{cultureaspectId},
+		#{createMemberId},
+		#{title},
+		#{content},
+		#{fileType},
+		'0',
+		null,
+		now(6),
+		null,
+		'0'
+		)
+	</insert>
+
+	<insert id="createTaskMember" parameterType="java.lang.String">
+		insert into 
+		task_member(Id,TaskId,MemberId) 
+		values(
+		uuid(),
+		#{taskId},
+		#{memberId}
+		)
+	</insert>
+
+	<update id="updateTask" parameterType="com.entity.Task">
+		update task
+		<set>
+			<if test="title!=null">Title = #{title},</if>
+			<if test="content!=null">Content = #{content},</if>
+		</set>
+		,UpdateDate = now(6) where Id = #{id} and IsDeleted = '0'
+	</update>
+
+	<update id="submitTask" parameterType="java.lang.String">
+		update task set 
+		IsSubmited = '1' where Id = #{taskId} and IsDeleted = '0'
+	</update>
+
+	<update id="updateUnpassed" parameterType="java.lang.String">
+		update task set
+		IsSubmited = '0',Message = "未通过" where Id = #{taskId} and IsDeleted = '0'
+	</update>
+
+	<update id="FinishTask" parameterType="java.lang.String">
+		update task set 
+		IsFinished = '1',FinishedDate = now(6) where Id = #{taskId} and IsDeleted = '0'
+	</update>
+
+	<update id="deleteTask" parameterType="java.lang.String">
+		update task set 
+		IsDeleted = '1' where id = #{taskId}
+	</update>
+	
+	<delete id="deleteTaskMember" parameterType="java.lang.String">
+		delete from task_member where TaskId = #{taskId}
+	</delete>
+
+</mapper>

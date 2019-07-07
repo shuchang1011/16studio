@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.HistoryDao">
+
+	<resultMap type="com.entity.Operation" id="operationResultMap">
+		<id column="Id" property="id"/>
+		<result column="VillageId" property="villageId" />
+		<result column="Target" property="target" />
+		<result column="TargetId" property="targetId" />
+		<result column="Operation" property="operation" />
+		<result column="CreateDate" property="createDate" />
+		<result column="IsDeleted" property="isDeleted" />
+	</resultMap>
+	
+	<resultMap type="com.entity.Village" id="villageResultMap">
+		<id column="Id" property="id"/>
+		<result column="OperationId" property="operationId"/> 
+		<result column="Name" property="name"/>
+		<result column="Location" property="location"/>
+		<result column="Description" property="description"/>
+		<result column="OrganizationId" property="organizationId"/>
+		<result column="ChangeDate" property="changeDate"/>
+		<result column="IsDeleted" property="isDeleted"/>
+	</resultMap>
+	
+	<select id="findAllOperation" resultMap="operationResultMap" parameterType="java.lang.String">
+		select * from operation where VillageId = #{villageId} and Target = #{target} and IsDeleted = '0' order by CreateDate desc
+	</select>
+	
+	<select id="findOperation" resultMap="operationResultMap" parameterType="java.lang.String">
+		select * from operation where Id = #{operationId} and IsDeleted = '0'
+	</select>
+
+	<select id="findVillageByOperationId" resultMap="villageResultMap" parameterType="java.lang.String">
+		select * from village_history where OperationId = #{operationId} and IsDeleted = '0'
+	</select>
+	
+	<insert id="createOperation" parameterType="com.entity.Operation">
+		insert into operation(Id,VillageId,Target,TargetId,Operation,CreateDate,IsDeleted) 
+		values(
+			#{id},
+			#{villageId},
+			#{target},
+			#{targetId},
+			#{operation},
+			now(6),
+			'0'
+			)
+	</insert>
+	
+	<insert id="createVillageHistory" parameterType="com.entity.Village">
+		insert into village_history(Id,OperationId,Name,Location,Description,OrganizationId,ChangeDate,IsDeleted) 
+		values(
+			uuid(),
+			#{operationId},
+			#{name},
+			#{location},
+			#{description},
+			#{organizationId},
+			now(6),
+			'0'
+			)
+	</insert>
+	
+	<update id="deleteOperation" parameterType="java.lang.String">
+		update operation set IsDeleted = '1' where Id = #{operationId}
+	</update>
+	
+	<update id="deleteVillage" parameterType="java.lang.String">
+		update village_history set IsDeleted = '1' where OperationId = #{operationId}
+	</update>
+	
+	<update id="restoreVillage" parameterType="com.entity.Village">
+		update village
+		<set>
+			<if test="name!=null">Name = #{name},</if>
+			<if test="location!=null">Location = #{location},</if>
+			<if test="description!=null">Description = #{description},</if>
+		</set>
+		,UpdateDate = now(6) where Id in (select TargetId from operation where Id = #{operationId})
+	</update>
+	
+	<update id="recoveryVillage" parameterType="java.lang.String">
+		update village set IsDeleted = '0' where Id = #{villageId}
+	</update>
+
+</mapper>

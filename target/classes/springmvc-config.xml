@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+
+	<!-- SpringMVC 开始-->
+	<!-- controller、mapping映射、dao层交由spring管理 -->
+	<!-- spring会去自动扫描base-package对应的路径或者该路径的子包下面的java文件,并将其注册为bean -->
+	<context:component-scan base-package="com.controller,com.test,com.util.ScheduledCleanUtil.com.config.SwaggerConfig" />
+	<!-- SpringMVC的注册处理器 -->
+	<mvc:annotation-driven />
+	<!-- 对进入DispatcherServlet的URL进行筛查，避免静态文件被拦截 ，
+	还可以使用mvc:resource,由Spring MVC框架自己处理静态资源-->
+	<mvc:default-servlet-handler />
+	
+	<mvc:resources location="/js/" mapping="/js/**"/>
+	<mvc:resources location="/jsp/" mapping="/jsp/**"/>
+	<mvc:resources location="/css/" mapping="/css/**"/>
+	<mvc:resources location="/Images/" mapping="/Images/**"/>
+	<mvc:resources location="/Javascript/" mapping="/Javascript/**"/>
+	<mvc:resources location="/media/" mapping="/media/**"/>
+	<mvc:resources location="/ueditor/" mapping="/ueditor/**"/>
+	<mvc:resources location="/doc/" mapping="/doc/**"/>
+	<mvc:resources location="/layui/" mapping="/layui/**"/>
+     
+	<!-- 文件上传 
+	p:defaultEncoding="UTF-8"：这里设置默认的文件编码为UTF-8，必须与用户JSP的默认编码一致
+	p:uploadTempDir="upload/temp"：文件上传临时目录，上传完成后，就会将临时文件删除；
+	p:和<property></property>效果一致-->
+   	<bean id="multipartResolver"
+    	class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    	<property name="defaultEncoding">
+    		<value>UTF-8</value>
+    	</property>	
+    	<property name="maxUploadSize">
+    		<value>5000000</value>
+    	</property>	
+    </bean>
+	
+	
+
+	<bean id="userListJson"
+		class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+	
+	<!-- SpringMVC的视图处理器 -->
+	<!--视图解析器 添加前缀后缀属性，获取到返回的视图字符串会自动添加到其中 比如返回“hello” ，则查找视图的路径为/WEB-INF/content/hello.jsp -->
+	<bean id="jsp" 
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!--前缀 -->
+		<property name="prefix">
+			<value>/jsp/</value>
+		</property>
+		<!--后缀 -->
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+		<!-- 解决多个ViewResolver时jsp获取不到时,跳转到下一个ViewResolver -->
+		<property name="viewClass">
+			<value>com.common.DefaultJstlView</value>
+		</property>
+	</bean>
+	<bean id="ueditor" 
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!--前缀 -->
+		<property name="prefix">
+			<value>/ueditor/</value>
+		</property>
+		<!--后缀 -->
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+		<!-- 解决多个ViewResolver时jsp获取不到时,跳转到下一个ViewResolver -->
+		<property name="viewClass">
+			<value>com.common.DefaultJstlView</value>
+		</property>
+	</bean>
+	
+	<bean id="scheduledCleanUtil" class="com.util.ScheduledCleanUtil"/>
+	
+	<!-- 配置默认访问页面 -->
+	<mvc:view-controller path="/" view-name="redirect:/Login/login" />
+	<!-- SpringMVC 完成 -->
+	 <!-- 定时任务 -->
+    <task:annotation-driven />  
+    <task:scheduled-tasks>
+        <task:scheduled ref="scheduledCleanUtil" method="scheduledClean" cron="0 0 0 * * ?"/>
+    </task:scheduled-tasks>
+	
+</beans>

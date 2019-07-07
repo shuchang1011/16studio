@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+
+	<import resource="classpath*:spring-shiro.xml" />
+	<import resource="classpath*:spring-mybatis.xml" />
+	<mybatis-spring:scan base-package="com.dao" />
+
+	<!--打开注解器 -->
+	<context:annotation-config />
+	<!--指定注解扫描的路径,查看是否有加入spring框架的类 -->
+	<!-- 扫描类包，将标注Spring注解的类自动转化Bean，同时完成Bean的注入 -->
+	<context:component-scan base-package="com.service,com.service.serviceImpl" />
+
+
+	 <!-- 配置Swagger相关静态资源 --> 
+     <mvc:resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html"/> 
+     <mvc:resources location="classpath:/META-INF/resources/webjars/" mapping="/webjars/**"/>
+    
+
+
+</beans>

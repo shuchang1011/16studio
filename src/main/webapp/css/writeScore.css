@@ -1,0 +1,40 @@
+*{
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+}
+span{
+    margin-top: 20px;
+}
+h3{
+    margin-top: 20px;
+}
+table {
+    margin-top: 20px;
+    border-collapse:collapse;
+}
+td{
+    border: 1px #CC9966 solid;
+}
+.zone{
+    background-color: #990000;
+    color: #FFFFCC;
+    height: 50px;
+}
+.td1{
+    width: 100px;
+}
+.td2{
+    width: 200px;
+}
+.oneMoudle{
+    height: 40px;
+}
+a{
+    text-decoration: none;
+    background-color: #E86537;
+    color: white;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 5%;
+}
