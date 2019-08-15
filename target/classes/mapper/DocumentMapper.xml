@@ -172,10 +172,20 @@
 	
 	<update id="submitTempDoc" parameterType="java.lang.String">
 		update temp_document
-		set IsSubmited = '1', SubmitDate = now(6)
+		set Content = #{content}, IsSubmited = '1', SubmitDate = now(6)
 		where isDeleted = '0' and FileId like (
 			select a.FileId from (
 				select FileId from temp_document where Id = #{tempDocId}
+			)a
+		)
+	</update>
+
+	<update id="submitDoc" parameterType="java.lang.String">
+		update temp_document
+		set IsSubmited = '1', SubmitDate = now(6)
+		where isDeleted = '0' and FileId like (
+			select a.FileId from (
+				select FileId from temp_document where Id = #{id}
 			)a
 		)
 	</update>
@@ -184,6 +194,7 @@
 		update temp_document
 		<set>
 			<if test="state!=null">State = #{state},</if>
+			<if test="html!=null">Content = #{html}</if>
 		</set>
 		,IsApproved = '1',AuditDate = now(6) 
 		where isDeleted = '0' and FileId like (
@@ -197,6 +208,7 @@
 		update temp_document
 		<set>
 			<if test="state!=null">State = #{state},</if>
+			<if test="problem!=null">Problem = #{problem}</if>
 		</set>
 		,IsSubmited = '0',AuditDate = now(6) 
 		where isDeleted = '0' and FileId like (

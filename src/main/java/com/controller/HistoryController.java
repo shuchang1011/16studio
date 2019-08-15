@@ -1,6 +1,8 @@
 package com.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -26,6 +28,7 @@ import com.service.MemberService;
 import com.service.OrganizationService;
 import com.service.VillageService;
 import com.wordnik.swagger.annotations.Api;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Api(value="restful",description="历史详情Api")
 @Controller
@@ -132,11 +135,20 @@ public class HistoryController {
 		model.addAttribute("msg", "已还原历史修改数据");
 		return "msg";
 	}
-	
+
+	@ResponseBody
 	@RequestMapping(value="/recoveryHistory",method=RequestMethod.POST)
-	public String recoveryHistory(@RequestParam("villageId")String villageId,Model model) {
-		historyService.recoveryVillage(villageId);
-		model.addAttribute("msg", "已还原历史修改数据");
-		return "msg";
+	public Map<String,Object> recoveryHistory(@RequestParam("villageId")String villageId, Model model) {
+		logger.info("恢复历史数据");
+		Map<String,Object> map = new HashMap<String, Object>();
+
+		try {
+			historyService.recoveryVillage(villageId);
+			map.put("msg", "已还原历史修改数据");
+		} catch (Exception e) {
+			map.put("msg", e);
+		}
+
+		return map;
 	}
 }

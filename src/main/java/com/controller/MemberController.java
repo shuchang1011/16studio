@@ -9,17 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.entity.Account;
 import com.entity.Member;
 import com.service.MemberService;
 import com.service.OrganizationService;
 import com.wordnik.swagger.annotations.Api;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Api(value="restful",description="用户Api")
 @Controller
@@ -65,14 +64,20 @@ public class MemberController {
         model.addAttribute("msg", "新增成功");
         return "msg";
     } 
-	
+
+    @ResponseBody
 	@RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public String update(HttpSession session,@ModelAttribute Member member, Model model) {
+    public Map<String,Object> update(HttpSession session, @ModelAttribute Member member, Model model) {
 		logger.info("修改个人信息");
-		member.setAccountId(((Account)session.getAttribute("user")).getId());
-        memberService.updateMember(member);
-        model.addAttribute("msg", "修改成功");
-        return "msg";
+		Map<String,Object> map = new HashMap<String, Object>();
+		try {
+			member.setAccountId(((Account)session.getAttribute("user")).getId());
+			memberService.updateMember(member);
+			map.put("msg", "修改成功");
+		} catch (Exception e) {
+			map.put("msg", e);
+		}
+		return map;
     }
 	
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)

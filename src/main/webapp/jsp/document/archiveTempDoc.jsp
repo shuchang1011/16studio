@@ -35,10 +35,10 @@
 	<div class="g_6 contents_options">
 		<div class="simple_buttons" id="valid">
 			<div class="bwIcon i_16_settings">
-				<form action="${pageContext.request.contextPath}/document/archiveTempDoc/${tempDoc.get(0).getId()}" method="post">
+				<form id="form1"  action="${pageContext.request.contextPath}/document/archiveTempDoc/${tempDoc.get(0).getId()}" method="post" onsubmit="return false">
 					<input type="hidden" name="_method" value="put" />
-					<input type="submit" name="state" value="归档" class="btn"/>
-					<input type="submit" name="state" value="退回" class="btn"/>
+					<input type="submit" name="state" value="归档" onclick="submitForm()" class="btn"/>
+					<input type="submit" name="state" value="退回" onclick="submitForm()" class="btn"/>
 			    </form>
 			</div>
 		</div>
@@ -106,7 +106,7 @@
 							<div class="g_3"><span class="label">文件</span></div>
 							<div class="g_9">
 								<span class="label input">${tempDoc.get(0).getTitle() }
-									<form action="${pageContext.request.contextPath}/document/preview" method="get">
+									<form action="${pageContext.request.contextPath}/document/preview" method="get" target="_blank">
 										<input type="hidden" name="path" value="${list.getPath() }"/>
 										<input type="hidden" name="type" value="${list.getType() }"/>
 										<input type="hidden" name="swfName" value="${list.getId() }"/>
@@ -120,64 +120,27 @@
 			</c:choose>
 		</div>
 	</div>
-	<%-- <form action="${pageContext.request.contextPath}/document/archiveTempDoc/${tempDoc.get(0).getId()}" method="post">
-		<input type="hidden" name="_method" value="put" />
-		<input type="submit" name="state" value="归档" />
-		<input type="submit" name="state" value="退回" />
-    </form>
-	<h5>
-		文件类型：
-		<c:if test="${tempDoc.get(0).getType() eq 'image' }">图片</c:if>
-		<c:if test="${tempDoc.get(0).getType() eq 'file' }">文档</c:if>
-		<c:if test="${tempDoc.get(0).getType() eq 'video' }">视频</c:if>
-		<c:if test="${tempDoc.get(0).getType() eq 'html' }">html</c:if>
-	</h5>
-	<br>
-	<label>标题:</label>${tempDoc.get(0).getTitle() }<br> 
-	<label>描述:</label>${tempDoc.get(0).getDescription() }<br>
-	<c:choose>
-		<c:when test="${tempDoc.get(0).getType() eq 'html' }">
-			<div>
-				<textarea id="myEditor" style="width: 100%; height: 285px;">${tempDoc.getContent()}</textarea>
-			</div>
-		</c:when>
-		<c:when test="${tempDoc.get(0).getType() eq 'image' }">
-			<div>
-				<textarea id="myEditor" style="width: 100%; height: 285px;">
-					<c:forEach items='${tempDoc}' var='list'>
-						<p><img src="/ancientVillage/upload/viewImagesToPage?imagePath=${list.getPath() }" title="" alt="" width="374" height="431"/></p>
-					</c:forEach>
-				</textarea>
-			</div>
-		</c:when>
-		<c:when test="${tempDoc.get(0).getType() eq 'video' }">
-			<div>
-				<textarea id="myEditor" style="width: 100%; height: 285px;">
-					<c:forEach items='${tempDoc}' var='list'>
-						<p><video class="edui-upload-video video-js vjs-default-skin video-js" controls="" preload="none" src="/shiroDemo/upload/fileDownLoad?url=${list.getPath() }" width="420" height="280"></video></p>
-					</c:forEach>
-				</textarea>
-			</div>
-		</c:when>
-		<c:otherwise>
-			<c:forEach items='${tempDoc}' var='list'>
-				<form action="${pageContext.request.contextPath}/document/preview" method="get">
-					<input type="hidden" name="path" value="${list.getPath() }"/>
-					<input type="hidden" name="type" value="${list.getType() }"/>
-					<input type="hidden" name="swfName" value="${list.getId() }"/>
-		    	  	<input type="submit" value="预览"/><br>
-		    	</form>
-			</c:forEach>
-		</c:otherwise>
-	</c:choose> --%>
+
 <script type="text/javascript">
 	
 	var ue = UE.getEditor('myEditor');
-	
+
 	function submitForm() {
-    	var html = UE.getEditor('myEditor').getContent();
-    	document.getElementById("html").value = html;
-    }
+		$.ajax({            //几个参数需要注意一下
+			type: "POST",//方法类型
+			dataType: "json",//预期服务器返回的数据类型
+			url: "${pageContext.request.contextPath}/document/archiveTempDoc/${tempDoc.get(0).getId()}" ,//url
+			data: $('#form1').serialize(),
+			success: function (result) {
+				//console.log(result);//打印服务端返回的数据(调试用)
+				alert(result.msg);
+				setTimeout("location.href='${pageContext.request.contextPath}/document/showArchiveTempDoc'", 2000);
+			},
+			error : function() {
+				alert("异常！");
+			}
+		});
+	}
 	
 	var editor = new UE.ui.Editor();
 	editor.render('editor');

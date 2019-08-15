@@ -36,6 +36,19 @@
 			}
 		};
 	</script>
+	<script type="text/javascript"> function reinitIframe() {
+		var iframe = document.getElementById("test");
+		try {
+			var bHeight = iframe.contentWindow.document.body.scrollHeight;
+			var dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
+			var height = Math.max(bHeight, dHeight);
+			iframe.height = height;
+			console.log(height);
+		} catch (ex) {
+		}
+	}
+	window.setInterval("reinitIframe()", 200);
+	</script>
 </head>
 
 <body>
@@ -77,43 +90,43 @@
 	        	<ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="navtree">
 	        		<c:if test="${user.getRole().getName() eq '超级管理员' }">
 		        		<li class="layui-nav-item">
-		        			<a href="javascript:;" lay-href="${pageContext.request.contextPath}/organization/organizationView" title="General Info" target="message">
+		        			<a href="javascript:;" lay-href="${pageContext.request.contextPath}/organization/organizationView" title="General Info">
 								<span class="iconfont" style="margin-left:-10%;">&#xe597;</span>
 								<cite>机构管理</cite>
 							</a>
 		        		</li>
 		        		<li class="layui-nav-item">
-		        			<a href="javascript:;" lay-href="${pageContext.request.contextPath}/account/userView" title="Your Messages" target="message">
+		        			<a href="javascript:;" lay-href="${pageContext.request.contextPath}/account/userView" title="Your Messages">
 								<span class="iconfont" style="margin-left:-10%;">&#xe696;</span>
 								<cite>人员管理</cite>
 							</a>
 		        		</li>
 		        		<li class="layui-nav-item">
-		        			<a href="javascript:;" lay-href="${pageContext.request.contextPath}/village/villageView" title="Visual Data" target="message">
+		        			<a href="javascript:;" lay-href="${pageContext.request.contextPath}/village/villageView" title="Visual Data">
 								<span class="iconfont" style="margin-left:-10%;">&#xe65d;</span>
 								<cite>村落管理</cite>
 							</a>
 		        		</li>
 		        		<li class="layui-nav-item">
-		        			<a href="javascript:;" lay-href="${pageContext.request.contextPath}/village/cultureaspectView" title="Visual Data" target="message">
+		        			<a href="javascript:;" lay-href="${pageContext.request.contextPath}/village/cultureaspectView" title="Visual Data">
 								<span class="iconfont" style="margin-left:-10%;">&#xe7ac;</span>
 								<cite>文化类别</cite>
 							</a>
 		        		</li>
 		        		<li class="layui-nav-item">
-		        			<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/showVillage" title="Kit elements" target="message">
+		        			<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/showVillage" title="Kit elements">
 								<span class="iconfont" style="margin-left:-10%;">&#xe625;</span>
 								<cite>档案管理</cite>
 							</a>
 		        		</li>
 		        		<li class="layui-nav-item">
-		        			<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/showDocument" title="Some Rows" target="message">
+		        			<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/showDocument" title="Some Rows">
 								<span class="iconfont" style="margin-left:-10%;">&#xe71a;</span>
 								<cite>文档查阅</cite>
 							</a>
 		        		</li>
 		        		<li class="layui-nav-item">
-		        			<a href="javascript:;" lay-href="${pageContext.request.contextPath}/member/memberView" title="Some Fields" target="message">
+		        			<a href="javascript:;" lay-href="${pageContext.request.contextPath}/member/memberView" title="Some Fields">
 								<span class="iconfont" style="margin-left:-10%;">&#xe719;</span>
 								<cite>个人信息</cite>
 							</a>
@@ -121,7 +134,7 @@
 		        	</c:if>
 		        	<c:if test="${user.getRole().getName() eq '机构管理员' }">
 						<li class="layui-nav-item">
-							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/account/userView" title="Your Messages" target="message">
+							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/account/userView" title="Your Messages">
 								<span class="iconfont" style="margin-left:-10%;">&#xe696;</span>
 								<cite>人员管理</cite>
 							</a>
@@ -134,19 +147,19 @@
 							</a>
 							<dl class="layui-nav-child">
 						      <dd class="">
-						        <a href="javascript:;" lay-href="${pageContext.request.contextPath}/task/finishedTaskView" target="message">
+						        <a href="javascript:;" lay-href="${pageContext.request.contextPath}/task/finishedTaskView">
 						        	<span class="iconfont" style="margin-left:-10%;">&#xe501;</span>
 						        	<cite>已完成任务</cite>
 						        </a>
 						      </dd>
 						      <dd class="">
-						        <a href="javascript:;" lay-href="${pageContext.request.contextPath}/task/unFinishedTaskView" target="message">
+						        <a href="javascript:;" lay-href="${pageContext.request.contextPath}/task/unFinishedTaskView">
 						        	<span class="iconfont" style="margin-left:-10%;">&#xe65b;</span>
 						        	<cite>未完成任务</cite>
 						        </a>
 						      </dd>
 						      <dd class="">
-						        <a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/archive" target="message">
+						        <a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/archive">
 						        	<span class="iconfont" style="margin-left:-10%;">&#xe59f;</span>
 						        	<cite>任务通知</cite>
 						        </a>
@@ -154,31 +167,31 @@
 						    </dl>
 						</li>
 						<li class="layui-nav-item">
-							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/village/villageView" title="Visual Data" target="message">
+							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/village/villageView" title="Visual Data">
 								<span class="iconfont" style="margin-left:-10%;">&#xe65d;</span>
 								<cite>村落管理</cite>
 							</a>
 						</li>
 						<li class="layui-nav-item">
-							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/village/cultureaspectView" title="Visual Data" target="message">
+							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/village/cultureaspectView" title="Visual Data">
 								<span class="iconfont" style="margin-left:-10%;">&#xe7ac;</span>
 								<cite>文化类别</cite>
 							</a>
 						</li>
 						<li class="layui-nav-item">
-							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/showVillage" title="Kit elements" target="message">
+							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/showVillage" title="Kit elements">
 								<span class="iconfont" style="margin-left:-10%;">&#xe625;</span>
 								<cite>档案管理</cite>
 							</a>
 						</li>
 						<li class="layui-nav-item">
-							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/showDocument" title="Some Rows" target="message">
+							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/showDocument" title="Some Rows">
 								<span class="iconfont" style="margin-left:-10%;">&#xe71a;</span>
 								<cite>文档查阅</cite>
 							</a>
 						</li>
 						<li class="layui-nav-item">
-							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/member/memberView" title="Some Fields" target="message">
+							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/member/memberView" title="Some Fields">
 								<span class="iconfont" style="margin-left:-10%;">&#xe719;</span>
 								<cite>个人信息</cite>
 							</a>
@@ -186,25 +199,25 @@
 					</c:if>
 					<c:if test="${user.getRole().getName() eq '学者' }">
 						<li class="layui-nav-item">
-							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/audit" title="Kit elements" target="message">
+							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/audit" title="Kit elements">
 								<span class="iconfont" style="margin-left:-10%;">&#xe66c;</span>
 								<cite>档案审核</cite>
 							</a>
 						</li>
 						<li class="layui-nav-item">
-							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/showVillage" title="Kit elements" target="message">
+							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/showVillage" title="Kit elements">
 								<span class="iconfont" style="margin-left:-10%;">&#xe625;</span>
 								<cite>档案管理</cite>
 							</a>
 						</li>
 						<li class="layui-nav-item">
-							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/showDocument" title="Some Rows" target="message">
+							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/showDocument" title="Some Rows">
 								<span class="iconfont" style="margin-left:-10%;">&#xe71a;</span>
 								<cite>文档查阅</cite>
 							</a>
 						</li>
 						<li class="layui-nav-item">
-							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/member/memberView" title="Some Fields" target="message">
+							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/member/memberView" title="Some Fields">
 								<span class="iconfont" style="margin-left:-10%;">&#xe719;</span>
 								<cite>个人信息</cite>
 							</a>
@@ -212,25 +225,25 @@
 					</c:if>
 					<c:if test="${user.getRole().getName() eq '录入员' }">
 						<li class="layui-nav-item">
-							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/showMyTempDoc" title="Kit elements" target="message">
+							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/showMyTempDoc" title="Kit elements">
 								<span class="iconfont" style="margin-left:-10%;">&#xe610;</span>
 								<cite>工作管理</cite>
 							</a>
 						</li>
 						<li class="layui-nav-item">
-							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/showVillage" title="Kit elements" target="message">
+							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/showVillage" title="Kit elements">
 								<span class="iconfont" style="margin-left:-10%;">&#xe625;</span>
 								<cite>档案管理</cite>
 							</a>
 						</li>
 						<li class="layui-nav-item">
-							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/showDocument" title="Some Rows" target="message">
+							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/document/showDocument" title="Some Rows">
 								<span class="iconfont" style="margin-left:-10%;">&#xe71a;</span>
 								<cite>文档查阅</cite>
 							</a>
 						</li>
 						<li class="layui-nav-item">
-							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/member/memberView" title="Some Fields" target="message">
+							<a href="javascript:;" lay-href="${pageContext.request.contextPath}/member/memberView" title="Some Fields">
 								<span class="iconfont" style="margin-left:-10%;">&#xe719;</span>
 								<cite>个人信息</cite>
 							</a>
@@ -246,19 +259,19 @@
 						<ul class="layui-tab-title layui-bg-white">
 							<li class="layui-this" lay-id="${pageContext.request.contextPath}/organization/organizationView"><span class="iconfont">&#xe719;</span></li>
 						</ul>
-						<div class="layui-tab-content">
+						<div class="layui-tab-content" style="min-height: auto;">
 	                    	<div class="layui-tab-item layui-show">
 	                    		<c:if test="${user.getRole().getName() eq '录入员' }">
-	                    			<iframe src="${pageContext.request.contextPath}/Login/home" class="layui-admin-iframe" scrolling="yes" frameborder="0" onload="setIframeHeight(this);" style="width:100%;"></iframe>
+	                    			<iframe id="test" src="${pageContext.request.contextPath}/Login/home" class="layui-admin-iframe" scrolling="yes" frameborder="0"  onload="this.height=100" style="width:100%;"></iframe>
 	                    		</c:if>
 	                    		<c:if test="${user.getRole().getName() eq '学者' }">
-	                    			<iframe src="${pageContext.request.contextPath}/Login/home1" class="layui-admin-iframe" scrolling="yes" frameborder="0" onload="setIframeHeight(this);" style="width:100%;"></iframe>
+	                    			<iframe id="test" src="${pageContext.request.contextPath}/Login/home1" class="layui-admin-iframe" scrolling="yes" frameborder="0"  onload="this.height=100" style="width:100%;"></iframe>
 	                    		</c:if>
 	                    		<c:if test="${user.getRole().getName() eq '机构管理员' }">
-	                    			<iframe src="${pageContext.request.contextPath}/Login/home2" class="layui-admin-iframe" scrolling="yes" frameborder="0" onload="setIframeHeight(this);" style="width:100%;"></iframe>
+	                    			<iframe id="test" src="${pageContext.request.contextPath}/Login/home2" class="layui-admin-iframe" scrolling="yes" frameborder="0"  onload="this.height=100" style="width:100%;"></iframe>
 	                    		</c:if>
 	                    		<c:if test="${user.getRole().getName() eq '超级管理员' }">
-	                    			<iframe src="${pageContext.request.contextPath}/organization/organizationView" class="layui-admin-iframe" scrolling="yes" frameborder="0" onload="setIframeHeight(this);" style="width:100%;"></iframe>
+	                    			<iframe id="test" src="${pageContext.request.contextPath}/organization/organizationView" class="layui-admin-iframe" scrolling="yes" frameborder="0"  onload="this.height=100" style="width:100%;"></iframe>
 	                    		</c:if>
 		                    </div>
 	                	</div>
@@ -270,7 +283,14 @@
 </div>
 <script type="text/javascript" charset="utf-8" src="layui/layui.js"></script>
 <script type="text/javascript">
+window.onload=function(){
+	var msg = "${msg}";
+	if(msg == ''||msg == null){
 
+	}else{
+		alert("${msg}");
+	}
+}
 layui.use(['layer','element','jquery'], function(){
   var $ = layui.jquery;
   var layer = layui.layer;

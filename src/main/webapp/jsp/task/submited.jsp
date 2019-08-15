@@ -76,7 +76,7 @@
 			            <td style="width: 10%;">${list.village }</td>
 			            <td style="width: 10%;">${list.member }</td>
 			            <td style="width: 20%;">${list.createDate }</td>
-			            <td style="width: 10%;"><form action="${pageContext.request.contextPath}/task/finishTask/${list.getId()}" method="get">
+			            <td style="width: 10%;"><form action="${pageContext.request.contextPath}/task/updatePass/${list.getId()}" method="get">
 			            	  	<input type="submit" value="通过" class="submitIt simple_buttons"/>
 			            </form></td>
 			            <td style="width: 10%;"><form action="${pageContext.request.contextPath}/task/updateUnpass/${list.getId()}" method="get">
@@ -132,91 +132,5 @@
             </nav>
         </div>
 	</div>
-	<%-- <c:if test="${pageInfo.total != 0}">
-		<table>
-			<tr>
-				<td colspan="3"></td>
-				<td><form action="${pageContext.request.contextPath}/task/create" method="get">
-	            	  	<input type="submit" value="创建任务"/>
-	            </form></td>
-			</tr>
-			<tr>
-				<th>ID</th>
-				<th>标题</th>
-				<th>任务内容</th>
-				<th>任务村落</th>
-				<th>任务负责人</th>
-				<th>创建时间</th>
-				<th colspan="2">审核</th>
-			</tr>
-			<c:forEach items="${pageInfo.list}" var="list">
-				<tr>
-		            <td>${list.id }</td>
-		            <td>${list.title }</td>
-		            <td>${list.content }</td>
-		            <td>${list.village }</td>
-		            <td>${list.member }</td>
-		            <td>${list.createDate }</td>
-		            <td><form action="${pageContext.request.contextPath}/task/finishTask/${list.getId()}" method="get">
-		            	  	<input type="submit" value="通过"/>
-		            </form></td>
-		            <td><form action="${pageContext.request.contextPath}/task/updateUnpass/${list.getId()}" method="get">
-		            	  	<input type="submit" value="不通过"/>
-		            </form></td>
-		        </tr>
-			</c:forEach>
-		</table>
-	
-		<div class="g_6 pageNum">
-	       	 当前第 ${pageInfo.pageNum} 页.总共 ${pageInfo.pages} 页.一共 ${pageInfo.total} 条记录
-	    </div>
-	 
-	        <!--点击分页-->
-	        <div class="g_6">
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    
-                    <li><a href="${pageContext.request.contextPath}/task/submitedTaskView?pn=1">首页</a></li>
-                    
-                    <!--上一页-->
-                    <li>
-                        <c:if test="${pageInfo.hasPreviousPage}">
-                            <a href="${pageContext.request.contextPath}/task/submitedTaskView?pn=${pageInfo.pageNum-1}" aria-label="Previous">
-                                <span aria-hidden="true">«</span>
-                            </a>
-                        </c:if>
-                    </li>
- 
-                    <!--循环遍历连续显示的页面，若是当前页就高亮显示，并且没有链接-->
-                    <c:forEach items="${pageInfo.navigatepageNums}" var="page_num">
-                        <c:if test="${page_num == pageInfo.pageNum}">
-                            <li class="active"><a href="#">${page_num}</a></li>
-                        </c:if>
-                        <c:if test="${page_num != pageInfo.pageNum}">
-                            <li><a href="${pageContext.request.contextPath}/task/submitedTaskView?pn=${page_num}">${page_num}</a></li>
-                        </c:if>
-                    </c:forEach>
- 
-                    <!--下一页-->
-                    <li>
-                        <c:if test="${pageInfo.hasNextPage}">
-                            <a href="${pageContext.request.contextPath}/task/submitedTaskView?pn=${pageInfo.pageNum+1}"
-                               aria-label="Next">
-                                <span aria-hidden="true">»</span>
-                            </a>
-                        </c:if>
-                    </li>
-                    
-                    <li><a href="${pageContext.request.contextPath}/task/submitedTaskView?pn=${pageInfo.pages}">尾页</a></li>
-                </ul>
-            </nav>
-        </div>
-	</c:if>
-	<c:if test="${pageInfo.total == 0}">
-		无任务信息！<br>
-		<form action="${pageContext.request.contextPath}/task/create" method="get">
-        	  	<input type="submit" value="创建任务"/>
-        </form>
-	</c:if> --%>
 </body>
 </html>

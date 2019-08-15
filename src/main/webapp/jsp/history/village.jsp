@@ -8,7 +8,7 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>村落信息e</title>
+	<title>村落信息</title>
 	<!-- The Main CSS File -->
 	<link rel="stylesheet" href="../css/style.css" />
 	<script type="text/javascript" charset="utf-8" src="../media/js/jquery.js"></script>
@@ -120,71 +120,5 @@
             </nav>
         </div>
 	</div>
-	<%-- <c:if test="${pageInfo.total != 0}">
-		<table>
-			<tr>
-				<th>村落名</th>
-				<th>操作</th>
-			</tr>
-			<c:forEach items="${pageInfo.list}" var="list">
-				<tr>
-		            <td>${list.name }</td>
-		           	<td><form action="${pageContext.request.contextPath}/history/getHistoryOperation" method="get">
-		           		<input type="hidden" name="villageId" value="${list.getId() }">
-		           		<input type="hidden" name="target" value="village">
-		           		<input type="submit" value="查看历史修改详情">
-		           	</form></td>
-		        </tr>
-			</c:forEach>
-		</table>
-	
-		<div class="col-md-6">
-            当前第 ${pageInfo.pageNum} 页.总共 ${pageInfo.pages} 页.一共 ${pageInfo.total} 条记录
-        </div>
- 
-        <!--点击分页-->
-        <div class="col-md-6">
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    
-                    <li><a href="${pageContext.request.contextPath}/history/villageChangeView?pn=1">首页</a></li>
-                    
-                    <!--上一页-->
-                    <li>
-                        <c:if test="${pageInfo.hasPreviousPage}">
-                            <a href="${pageContext.request.contextPath}/history/villageChangeView?pn=${pageInfo.pageNum-1}" aria-label="Previous">
-                                <span aria-hidden="true">«</span>
-                            </a>
-                        </c:if>
-                    </li>
- 
-                    <!--循环遍历连续显示的页面，若是当前页就高亮显示，并且没有链接-->
-                    <c:forEach items="${pageInfo.navigatepageNums}" var="page_num">
-                        <c:if test="${page_num == pageInfo.pageNum}">
-                            <li class="active"><a href="#">${page_num}</a></li>
-                        </c:if>
-                        <c:if test="${page_num != pageInfo.pageNum}">
-                            <li><a href="${pageContext.request.contextPath}/history/villageChangeView?pn=${page_num}">${page_num}</a></li>
-                        </c:if>
-                    </c:forEach>
- 
-                    <!--下一页-->
-                    <li>
-                        <c:if test="${pageInfo.hasNextPage}">
-                            <a href="${pageContext.request.contextPath}/history/villageChangeView?pn=${pageInfo.pageNum+1}"
-                               aria-label="Next">
-                                <span aria-hidden="true">»</span>
-                            </a>
-                        </c:if>
-                    </li>
-                    
-                    <li><a href="${pageContext.request.contextPath}/history/villageChangeView?pn=${pageInfo.pages}">尾页</a></li>
-                </ul>
-            </nav>
-        </div>
-	</c:if>
-	<c:if test="${pageInfo.total == 0}">
-		无村落修改信息！
-	</c:if> --%>
 </body>
 </html>

@@ -49,9 +49,9 @@
 	<div class="g_6 contents_options">
 		<div class="simple_buttons">
 			<div class="bwIcon i_16_settings">
-				<form action="${pageContext.request.contextPath}/history/restoreHistory" method="post">
+				<form id="form1" action="${pageContext.request.contextPath}/history/restoreHistory" method="post" onsubmit="return false">
 					<input type="hidden" name="operationId" value="${operation.getId() }">
-            	  	<input type="submit" value="还原" class="btn"/>
+            	  	<input type="submit" value="还原" class="btn" onclick="submitForm()"/>
             </form>
 	        </div>
 		</div>
@@ -117,57 +117,23 @@
 		</div>
 
 	</div>
-	<%-- <table>
-		<tr>
-			<td colspan="3"></td>
-			<td><form action="${pageContext.request.contextPath}/history/restoreHistory" method="post">
-					<input type="hidden" name="operationId" value="${operation.getId() }">
-            	  	<input type="submit" value="还原"/>
-            </form></td>
-		</tr>
-		<tr>
-			<td><font size="6" color="red">${operation.getOperation() }</font></td>
-		</tr>
-		<tr>
-			<td>历史记录：</td>
-		</tr>
-		
-		<tr>
-			<th>ID</th>
-			<th>村落名</th>
-			<th>所在地</th>
-			<th>描述</th>
-			<th>创建机构</th>
-			<th>修改时间</th>
-		</tr>
-		<tr>
-            <td>${villageHistory.id }</td>
-            <td>${villageHistory.name }</td>
-            <td>${villageHistory.location }</td>
-            <td>${villageHistory.description }</td>
-            <td>${villageHistory.organization }</td>
-            <td>${villageHistory.changeDate }</td>
-        </tr>
-        <tr></tr>
-        <tr>
-			<td>当前村落信息：</td>
-		</tr>
-		<tr>
-			<th>ID</th>
-			<th>村落名</th>
-			<th>所在地</th>
-			<th>描述</th>
-			<th>创建机构</th>
-			<th>创建时间</th>
-		</tr>
-		<tr>
-            <td>${village.id }</td>
-            <td>${village.name }</td>
-            <td>${village.location }</td>
-            <td>${village.description }</td>
-            <td>${village.organization }</td>
-            <td>${village.createDate }</td>
-        </tr>
-	</table> --%>
+<script>
+	function submitForm() {
+		$.ajax({            //几个参数需要注意一下
+			type: "POST",//方法类型
+			dataType: "json",//预期服务器返回的数据类型
+			url: "${pageContext.request.contextPath}/history/recoveryHistory" ,//url
+			data: $('#form1').serialize(),
+			success: function (result) {
+				//console.log(result);//打印服务端返回的数据(调试用)
+				alert(result.msg);
+				setTimeout("location.href='${pageContext.request.contextPath}/village/villageView'", 2000);
+			},
+			error : function() {
+				alert("异常！");
+			}
+		});
+	}
+</script>
 </body>
 </html>

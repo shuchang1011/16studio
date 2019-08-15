@@ -14,13 +14,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<base href="<%=basePath%>">
 	<title>主页</title>
-	<link rel="stylesheet" href="layui/css/layui.css" />
-	<script type="text/javascript" src="js/jquery-3.2.1.min.js" ></script>
-</head>
-<body>
-<body class="layui-layout-body">
-		<div class="layui-fluid">
-			<div class="layui-row layui-col-space15">
+            <link rel="stylesheet" href="layui/css/layui.css" />
+            <script type="text/javascript" src="js/jquery-3.2.1.min.js" ></script>
+            </head>
+            <body>
+            <body class="layui-layout-body">
+            <div class="layui-fluid">
+                <div class="layui-row layui-col-space15">
 				<div class="layui-col-md6">
 					<div class="layui-card">
 						<div class="layui-card-header">任务通知</div>

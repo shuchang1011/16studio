@@ -116,56 +116,6 @@
 			</form>
 		</div>
 	</div>
-	<%-- <form action="${pageContext.request.contextPath}/document/updateTemp" method="post" onsubmit="submitForm()">
-		<input type="hidden" name="_method" value="put" />
-		<input type="hidden" name="id" value="${tempDoc.get(0).id }" />
-		<input type="hidden" name="type" value="${tempDoc.get(0).type }" />
-		<input type="hidden" name="villageId" value="${tempDoc.get(0).villageId }" />
-		<input type="hidden" name="cultureaspectId" value="${tempDoc.get(0).cultureaspectId }" />
-		<input type="hidden" name="createMemberId" value="${tempDoc.get(0).createMemberId }" />
-		<input type="hidden" name="auditMemberId" value="${tempDoc.get(0).auditMemberId }" />
-		<input type="hidden" name="fileMemberId" value="${tempDoc.get(0).fileMemberId }" />
-		<input type="hidden" name="fileId" value="${tempDoc.get(0).fileId }" />
-		<input type="hidden" id="html" name="content" value="" />
-		<label>标题:</label><input type="text" name="title" value="${tempDoc.get(0).title }"><br>
-		<label>描述:</label><input type="text" name="description" value="${tempDoc.get(0).description }"><br>
-		<c:choose>
-		<c:when test="${tempDoc.get(0).getType() eq 'html' }">
-			<div>
-				<textarea id="myEditor" style="width: 100%; height: 285px;">${tempDoc.get(0).getContent()}</textarea>
-			</div>
-		</c:when>
-		<c:when test="${tempDoc.get(0).getType() eq 'image' }">
-			<div>
-				<textarea id="myEditor" style="width: 100%; height: 285px;">
-					<c:forEach items='${tempDoc}' var='list'>
-						<p><img src="/ancientVillage/upload/viewImagesToPage?imagePath=${list.getPath() }" title="" alt="" width="374" height="431"/></p>
-					</c:forEach>
-				</textarea>
-			</div>
-		</c:when>
-		<c:when test="${tempDoc.get(0).getType() eq 'video' }">
-			<div>
-				<textarea id="myEditor" style="width: 100%; height: 285px;">
-					<c:forEach items='${tempDoc}' var='list'>
-						<p><video class="edui-upload-video video-js vjs-default-skin video-js" controls="" preload="none" src="/shiroDemo/upload/fileDownLoad?url=${list.getPath() }" width="420" height="280"></video></p>
-					</c:forEach>
-				</textarea>
-			</div>
-		</c:when>
-		<c:when test="${tempDoc.get(0).getType() eq 'file' }">
-			<div>
-				<textarea id="myEditor" style="width: 100%; height: 285px;">
-					<c:forEach items='${tempDoc}' var='list'>
-						<p><img style="vertical-align: middle; margin-right: 2px; width: 25px; height: 25px;" src="http://localhost:8080/ancientVillage/ueditor/dialogs/attachment/fileTypeImages/icon_${list.getFormat()}.gif"/><a style="font-size:12px; color:#0066cc;" href="/ancientVillage/upload/fileDownLoad?url=${list.getPath() }&filename=${list.getTitle()}.${list.getFormat()}" title="16级工作室通讯录.docx">${list.getTitle() }</a></p>
-					</c:forEach>
-				</textarea>
-			</div>
-		</c:when>
-		
-	</c:choose>
-		<input type="submit" value="提交">
-	</form> --%>
 <script type="text/javascript">
 	
 	var ue = UE.getEditor('myEditor');

@@ -41,7 +41,7 @@
 	<div class="g_12 separator"><span></span></div>
 	<div class="g_12 editor_info" id="editor_info">
 		<div class="widget_contents noPadding">
-			<form action="${pageContext.request.contextPath}/document/createTempDoc" onsubmit="submitForm()" method="post">
+			<form id="form1" action="${pageContext.request.contextPath}/document/createTempDoc" onsubmit="return false" method="post">
 			<input type="hidden" name="villageId" value="${villageId }"> 
 			<input type="hidden" name="cultureaspectId" value="${cultureaspectId }">
 			<input type="hidden" name="createMemberId" value="${memberId }">
@@ -78,7 +78,7 @@
 			<div class="line_grid">
 				<div class="g_3"><span class="label">Submit</span></div>
 				<div class="g_9">
-					<input type="submit" value="提交" class="submitIt simple_buttons" />
+					<input type="submit" value="提交" onclick="submitForm()" class="submitIt simple_buttons" />
 				</div>
 			</div>
 			</form>
@@ -89,15 +89,22 @@
 	//建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
 	var ue = UE.getEditor('myEditor');
 	function submitForm() {
-		var html = UE.getEditor('myEditor').getContentTxt();
-		alert("123");
-		alert(html)
+		var html = UE.getEditor('myEditor').getContent();
 		document.getElementById("html").value = html;
-		var a = document.getElementsByName("content");
-		for (var i = 0; i < a.length; i++) {
-			alert(a[i].value);
-		}
-
+		$.ajax({            //几个参数需要注意一下
+			type: "POST",//方法类型
+			dataType: "json",//预期服务器返回的数据类型
+			url: "${pageContext.request.contextPath}/document/createTempDoc" ,//url
+			data: $('#form1').serialize(),
+			success: function (result) {
+				//console.log(result);//打印服务端返回的数据(调试用)
+				alert(result.msg);
+				setTimeout("location.href='${pageContext.request.contextPath}/document/showMyTempDoc'", 2000);
+			},
+			error : function() {
+				alert("异常！");
+			}
+		});
 	}
 </script>
 </body>

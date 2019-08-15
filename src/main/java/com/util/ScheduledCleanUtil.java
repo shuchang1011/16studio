@@ -31,7 +31,7 @@ public class ScheduledCleanUtil {
 	@Autowired@Qualifier("DocumentServiceImpl")
 	private DocumentService documentService;
 	
-	@Scheduled(cron="0 0 0 * * ?")
+	@Scheduled(cron="10 0 0 * * ?")
 	public void scheduledClean() {
 		List<TempDoc> fileList = documentService.findTempDocByType(TYPE_FILE);
 		List<TempDoc> imageList = documentService.findTempDocByType(TYPE_IMAGE);

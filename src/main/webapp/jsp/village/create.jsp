@@ -28,7 +28,7 @@
 			<h4 class="widget_header_title wwIcon i_16_valid">添加村落</h4>
 		</div>
 		<div class="widget_contents noPadding">
-			<form action="${pageContext.request.contextPath}/village/createVillage" method="post">
+			<form id="form1" action="${pageContext.request.contextPath}/village/createVillage" method="post" onsubmit="return false">
 			<input type="hidden" name="organizationId" value="${organizationId}">
 			<div class="line_grid">
 				<div class="g_3"><span class="label">村落名<span class="must">*</span></span></div>
@@ -51,11 +51,29 @@
 			<div class="line_grid">
 				<div class="g_3"><span class="label">Submit</span></div>
 				<div class="g_9">
-					<input type="submit" value="提交" class="submitIt simple_buttons" />
+					<input type="submit" value="提交" onclick="submitForm()" class="submitIt simple_buttons" />
 				</div>
 			</div>
 			</form>
 		</div>
 	</div>
+<script>
+	function submitForm() {
+		$.ajax({            //几个参数需要注意一下
+			type: "POST",//方法类型
+			dataType: "json",//预期服务器返回的数据类型
+			url: "${pageContext.request.contextPath}/village/createVillage" ,//url
+			data: $('#form1').serialize(),
+			success: function (result) {
+				//console.log(result);//打印服务端返回的数据(调试用)
+				alert(result.msg);
+				setTimeout("location.href='${pageContext.request.contextPath}/village/villageView'", 2000);
+			},
+			error : function() {
+				alert("异常！");
+			}
+		});
+	}
+</script>
 </body>
 </html>

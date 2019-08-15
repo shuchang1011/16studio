@@ -15,4 +15,7 @@ public class Constants {
     public static final String STATE_ARCHIVE = "归档中";
     public static final String STATE_ARCHIVE_FAILED = "归档未通过";
     public static final String STATE_ARCHIVE_SUCCESS = "已归档";
+    public static final String PROCESS_FILE = "property/file-process.bpmn20.xml";
+    public static final String PROCESS_FILE_DefinitionKey = "fileArchives";
+    public static final String STATICRESOUCESURL = "127.0.0.1:8080/static";
 }

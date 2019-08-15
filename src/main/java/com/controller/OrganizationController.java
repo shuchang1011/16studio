@@ -1,7 +1,9 @@
 package com.controller;
 
 import java.sql.SQLSyntaxErrorException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -10,11 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.entity.Account;
 import com.entity.Organization;
@@ -48,13 +46,20 @@ public class OrganizationController {
         return "organization/create";
     }
 
-
+    @ResponseBody
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public String create(@ModelAttribute Organization organization, Model model) {
+    public Map<String,Object> create(@ModelAttribute Organization organization, Model model) {
     	logger.info("创建机构信息");
-    	organizationService.createOrganization(organization);
-        model.addAttribute("msg", "新增成功");
-        return "msg";
+        Map<String,Object> map = new HashMap<String, Object>();
+
+        try {
+            organizationService.createOrganization(organization);
+            map.put("msg", "新增成功");
+        } catch (Exception e) {
+            map.put("msg", e);
+        }
+
+        return map;
     }
     
     @RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
@@ -63,12 +68,18 @@ public class OrganizationController {
         return "organization/update";
     }
 
-
+    @ResponseBody
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public String update(@ModelAttribute Organization organization, Model model) {
-        organizationService.updateOrganization(organization);
-        model.addAttribute("msg", "修改成功");
-        return "msg";
+    public Map<String,Object> update(@ModelAttribute Organization organization, Model model) {
+        logger.info("修改机构信息");
+        Map<String,Object> map = new HashMap<String, Object>();
+        try {
+            organizationService.updateOrganization(organization);
+            map.put("msg", "修改成功");
+        } catch (Exception e) {
+            map.put("msg", e);
+        }
+        return map;
     }
     
     @RequestMapping(value = "/{id}/delete", method = RequestMethod.DELETE)

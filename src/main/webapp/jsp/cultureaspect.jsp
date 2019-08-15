@@ -79,9 +79,10 @@
 			            <td style="width: 10%;"><form action="${pageContext.request.contextPath}/village/updateCultureaspect/${list.getId()}" method="get">
 			            	  	<input type="submit" value="编辑"  class="submitIt simple_buttons"/>
 			            </form></td>
-			            <td style="width: 10%;"><form action="${pageContext.request.contextPath}/village/${list.getId()}/deleteCultureaspect" method="post">
-			            	  	<input type="hidden" name="_method" value="delete" />
-			            	  	<input type="submit" value="删除" class="submitIt simple_buttons"/>
+			            <td style="width: 10%;"><form id="form1" action="${pageContext.request.contextPath}/village/deleteCultureaspect" method="post" onsubmit="return false">
+							<input type="hidden" name="_method" value="delete" />
+							<input type="hidden" name="id" value="${list.getId()}" />
+							<input type="submit" value="删除" onclick="submitForm()" class="submitIt simple_buttons"/>
 			            </form></td>
 			        </tr>
 				</c:forEach>
@@ -134,94 +135,26 @@
         </div>
 	</div>
 	<div class="g_12 separator"><span></span></div>
-	<%-- <c:if test="${pageInfo.total != 0}">
-		<table>
-			<tr>
-				<td colspan="3"></td>
-				<td><form action="${pageContext.request.contextPath}/village/createCultureaspect" method="get">
-	            	  	<input type="submit" value="添加类别"/>
-	            </form></td>
-			</tr>
-			<tr>
-	    		<td>
-	    			<form action="${pageContext.request.contextPath}/preview" method="post" enctype="multipart/form-data">
-	    				<input type="file" id="importFile" name="importFile"/>
-	    				<input type="submit" name="button" value="预览">
-	    			</form>
-	    		</td>
-			</tr>
-			<tr>
-				<th>ID</th>
-				<th>文化类别</th>
-				<th>创建时间</th>
-				<th colspan="2">operation</th>
-			</tr>
-			<c:forEach items="${pageInfo.list}" var="list">
-				<tr>
-		            <td>${list.id }</td>
-		            <td>${list.title }</td>
-		            <td>${list.createDate }</td>
-		            <td><form action="${pageContext.request.contextPath}/village/updateCultureaspect/${list.getId()}" method="get">
-		            	  	<input type="submit" value="编辑"/>
-		            </form></td>
-		            <td><form action="${pageContext.request.contextPath}/village/${list.getId()}/deleteCultureaspect" method="post">
-		            	  	<input type="hidden" name="_method" value="delete" />
-		            	  	<input type="submit" value="删除"/>
-		            </form></td>
-		        </tr>
-			</c:forEach>
-		</table>
-	
-		<div class="col-md-6">
-            当前第 ${pageInfo.pageNum} 页.总共 ${pageInfo.pages} 页.一共 ${pageInfo.total} 条记录
-        </div>
- 
-        <!--点击分页-->
-        <div class="col-md-6">
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    
-                    <li><a href="${pageContext.request.contextPath}/village/cultureaspectView?pn=1">首页</a></li>
-                    
-                    <!--上一页-->
-                    <li>
-                        <c:if test="${pageInfo.hasPreviousPage}">
-                            <a href="${pageContext.request.contextPath}/village/cultureaspectView?pn=${pageInfo.pageNum-1}" aria-label="Previous">
-                                <span aria-hidden="true">«</span>
-                            </a>
-                        </c:if>
-                    </li>
- 
-                    <!--循环遍历连续显示的页面，若是当前页就高亮显示，并且没有链接-->
-                    <c:forEach items="${pageInfo.navigatepageNums}" var="page_num">
-                        <c:if test="${page_num == pageInfo.pageNum}">
-                            <li class="active"><a href="#">${page_num}</a></li>
-                        </c:if>
-                        <c:if test="${page_num != pageInfo.pageNum}">
-                            <li><a href="${pageContext.request.contextPath}/village/cultureaspectView?pn=${page_num}">${page_num}</a></li>
-                        </c:if>
-                    </c:forEach>
- 
-                    <!--下一页-->
-                    <li>
-                        <c:if test="${pageInfo.hasNextPage}">
-                            <a href="${pageContext.request.contextPath}/village/cultureaspectView?pn=${pageInfo.pageNum+1}"
-                               aria-label="Next">
-                                <span aria-hidden="true">»</span>
-                            </a>
-                        </c:if>
-                    </li>
-                    
-                    <li><a href="${pageContext.request.contextPath}/village/cultureaspectView?pn=${pageInfo.pages}">尾页</a></li>
-                </ul>
-            </nav>
-        </div>
-	</c:if>
-	<c:if test="${pageInfo.total == 0}">
-		无类别信息！<br>
-		<form action="${pageContext.request.contextPath}/village/createCultureaspect" method="get">
-        	  	<input type="submit" value="添加类别"/>
-        </form>
-	</c:if> --%>
+<script>
+	function submitForm() {
+		var deleteButton = window.confirm("确定要删除吗？")
+		if(deleteButton){
+			$.ajax({            //几个参数需要注意一下
+				type: "POST",//方法类型
+				dataType: "json",//预期服务器返回的数据类型
+				url: "${pageContext.request.contextPath}/village/deleteCultureaspect" ,//url
+				data: $('#form1').serialize(),
+				success: function (result) {
+					//console.log(result);//打印服务端返回的数据(调试用)
+					alert(result.msg);
+					setTimeout("location.href='${pageContext.request.contextPath}/village/cultureaspectView'", 2000);
+				},
+				error : function() {
+					alert("异常！");
+				}
+			});
+		}
+	}
+</script>
 </body>
 </html>

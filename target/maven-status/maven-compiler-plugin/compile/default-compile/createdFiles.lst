@@ -37,6 +37,7 @@ com\shiro\filter\CustomRolesAuthorizationFilter.class
 com\controller\UEditorController.class
 com\dao\VillageDao.class
 com\dao\CultureaspectDao.class
+com\util\WorkFlowUtil.class
 com\service\MemberService.class
 com\service\serviceImpl\AccountServiceImpl.class
 com\service\serviceImpl\DocumentServiceImpl.class

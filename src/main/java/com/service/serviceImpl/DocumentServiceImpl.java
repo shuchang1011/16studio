@@ -94,12 +94,12 @@ public class DocumentServiceImpl implements DocumentService{
 	}
 
 	@Override
-	public void auditTempDoc(String tempDocId, String state) {
+	public void auditTempDoc(String tempDocId, String state, String html, String problem) {
 		// TODO Auto-generated method stub
 		if(state.equals(Constants.STATE_ARCHIVE)) {
-			documentDao.tempDocPass(tempDocId,state);
+			documentDao.tempDocPass(tempDocId,state,html);
 		}else {
-			documentDao.tempDocUnPass(tempDocId, state);
+			documentDao.tempDocUnPass(tempDocId, state, problem);
 		}
 	}
 
@@ -130,9 +130,14 @@ public class DocumentServiceImpl implements DocumentService{
 	}
 
 	@Override
-	public void submitTempDoc(String tempDocId) {
+	public void submitTempDoc(String tempDocId,String content) {
 		// TODO Auto-generated method stub
-		documentDao.submitTempDoc(tempDocId);
+		documentDao.submitTempDoc(tempDocId,content);
+	}
+
+	@Override
+	public void submitDoc(String tempDocId) {
+		documentDao.submitDoc(tempDocId);
 	}
 
 	@Override

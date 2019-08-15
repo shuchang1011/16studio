@@ -31,7 +31,7 @@
 			<h4 class="widget_header_title wwIcon i_16_valid">添加任务</h4>
 		</div>
 		<div class="widget_contents noPadding">
-			<form action="${pageContext.request.contextPath}/task/create" method="post">
+			<form id="form1" action="${pageContext.request.contextPath}/task/create" method="post" onsubmit="return false">
 			<input type="hidden" name="organizationId" value="${organizationId }">
 			<div class="line_grid">
 				<div class="g_3"><span class="label">选择村落<span class="must">*</span></span></div>
@@ -90,64 +90,47 @@
 						<option value="file">文档</option>
 						<option value="video">视频</option>
 						<option value="html">html</option>
-					</select>
+                    </select>
 				</div>
 			</div>
 			<div class="line_grid">
 				<div class="g_3"><span class="label">Submit</span></div>
 				<div class="g_9">
-					<input type="submit" value="提交" class="submitIt simple_buttons" />
+					<input type="submit" value="提交" onclick="submitForm()" class="submitIt simple_buttons" />
 				</div>
 			</div>
 			</form>
 		</div>
 	</div>
-	<%-- <form action="${pageContext.request.contextPath}/task/create" method="post">
-		<input type="hidden" name="organizationId" value="${organizationId }"><br>
-		<label>选择村落:</label><select id="village" name="villageId" onchange="BuildSelectBox(this.value)">
-									<option>--请选择--</option>
-									<c:forEach items="${villageList}" var="list">
-										<option value="${list.id }">${list.name}</option>
-									</c:forEach>
-								</select><br>
-		<label>选择类别:</label><select id="cultureaspect" name="cultureaspectId" >
-								</select><br>
-		
-		
-		<label>选择学者:</label>
-			<c:forEach items="${scholarList}" var="list">
-				${list.getAccount().getDisplayName()}<input type="checkbox" name="memberId" value="${list.getId()}">
-			</c:forEach>
-		<br>	
-		<label>选择录入员 :</label>
-			<c:forEach items="${inputorList}" var="list">
-				${list.getAccount().getDisplayName()}<input type="checkbox" name="memberId" value="${list.getId()}">
-			</c:forEach>
-		<br>	
-		<label>标题:</label><input type="text" name="title"><br>	
-		<label>内容:</label><input type="text" name="content"><br>	
-		<label>文件类型:</label><select name="fileType">
-									<option>--请选择--</option>
-									<option value="image">图片</option>
-									<option value="file">文档</option>
-									<option value="video">视频</option>
-									<option value="html">html</option>
-								</select>
-		<input type="submit" value="提交">
-	</form> --%>
 <script type="text/javascript">
 	
 function BuildSelectBox(par) {
 	 $("#cultureaspect").empty();
 	 $.getJSON("${pageContext.request.contextPath}/task/getCultureaspect", { id: par }, function (json, textStatus) {
-		 alert(json.list.length);
 	  for (var i = json.list.length - 1; i >= 0; i--) {
-		  alert(json.list[i].id);
-	   $("#cultureaspect").prepend('<option value="' + json.list[i].id + '">' + json.list[i].title + '</option>')
+	      $("#cultureaspect").prepend('<option value="' + json.list[i].id + '">' + json.list[i].title + '</option>')
 	  };
 	  $("#cultureaspect").prepend('<option value="0">--请选择--</option>')
 	 });
 	}
+
+function submitForm() {
+    $.ajax({            //几个参数需要注意一下
+        type: "POST",//方法类型
+        dataType: "json",//预期服务器返回的数据类型
+        url: "${pageContext.request.contextPath}/task/createTask" ,//url
+        data: $('#form1').serialize(),
+        success: function (result) {
+            console.log(result);//打印服务端返回的数据(调试用)
+            alert(result.msg);
+            setTimeout("location.href='${pageContext.request.contextPath}/task/unFinishedTaskView'", 2000);
+        },
+        error : function() {
+            alert("异常！");
+        }
+    });
+}
+
 </script>
 </body>
 </html>

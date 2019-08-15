@@ -1,7 +1,9 @@
 package com.controller;
 
 import java.sql.SQLSyntaxErrorException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -10,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.entity.Account;
 import com.entity.Member;
@@ -88,15 +87,14 @@ public class AccountController {
         return "user/create";
     }
 
-
+	@ResponseBody
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public String create(@RequestParam("accountName")String accountName,@RequestParam("displayName")String displayName,
-    		@RequestParam("password")String password,@RequestParam("roleId")String roleId,@RequestParam("gender")String gender,
-    		@RequestParam("age")int age,@RequestParam("mobile")String mobile,@RequestParam("email")String email,
-    		@RequestParam("organizationId")String organizationId,Model model) {
+    public Map<String,Object> create(@RequestParam("accountName")String accountName, @RequestParam("displayName")String displayName,
+					  @RequestParam("password")String password, @RequestParam("roleId")String roleId, @RequestParam("gender")String gender,
+					  @RequestParam("age")int age, @RequestParam("mobile")String mobile, @RequestParam("email")String email,
+					  @RequestParam("organizationId")String organizationId) {
     	logger.info("创建账号信息");
-    	System.out.println("roleId:"+roleId);
-    	System.out.println("organizationId:"+organizationId);
+    	Map<String,Object> map = new HashMap<String, Object>();
     	Account account = new Account();
     	Member member = new Member();
     	account.setAccountName(accountName);
@@ -104,8 +102,8 @@ public class AccountController {
     	account.setPassword(password);
         try {
         	if(accountService.findAccountByName(account.getAccountName())!=null) {
-        		model.addAttribute("msg", "用户名已存在");
-        		return "msg";
+        		map.put("msg", "用户名已存在");
+        		return map;
         	}else {
         		accountService.createAccount(account);
         	}
@@ -119,10 +117,14 @@ public class AccountController {
         member.setAge(age);
         member.setMobile(mobile);
         member.setEmail(email);
-        memberService.createMember(member);
-        memberService.createRoleMember(roleId, memberService.findOneByAccountId(member.getAccountId()).getId());
-        model.addAttribute("msg", "新增成功");
-        return "msg";
+		try {
+			memberService.createMember(member);
+			memberService.createRoleMember(roleId, memberService.findOneByAccountId(member.getAccountId()).getId());
+			map.put("msg", "新增成功");
+		} catch (Exception e) {
+			map.put("msg", e);
+		}
+		return map;
     }
     
     @RequestMapping(value = "/update/{id}", method = RequestMethod.GET)
@@ -142,39 +144,44 @@ public class AccountController {
         return "user/update";
     }
 
-
+	@ResponseBody
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public String update(@RequestParam("id")String accountId,@RequestParam("accountName")String accountName,@RequestParam("displayName")String displayName,
+    public Map<String,Object> update(@RequestParam("id")String accountId,@RequestParam("accountName")String accountName,@RequestParam("displayName")String displayName,
     		@RequestParam("password")String password,@RequestParam("roleId")String roleId,@RequestParam("gender")String gender,
     		@RequestParam("age")int age,@RequestParam("mobile")String mobile,@RequestParam("email")String email,
-    		@RequestParam("organizationId")String organizationId, Model model) {
-    	Account account = new Account();
+    		@RequestParam("organizationId")String organizationId) {
+		logger.info("修改帐户信息");
+		Map<String,Object> map = new HashMap<String, Object>();
+		Account account = new Account();
     	Member member = new Member();
     	account.setId(accountId);
     	account.setAccountName(accountName);
     	account.setDisplayName(displayName);
-    	String Password = accountService.findAccountById(accountId).getPassword();
-    	logger.info("password"+password);
-    	if(passwordService.encryptPassword(account.getAccountName(), password).equals(Password)) {
-    		model.addAttribute("msg", "密码不能和之前的密码相同");
-    		return "msg";
-    	}else if(Password.equals(password)){
-    		account.setPassword(password);
-    	}else {
-    		account.setPassword(password);
-    		passwordService.encryptPassword(account);
-    	}
-        accountService.updateAccount(account);
-        member.setAccountId(accountId);
-        member.setOrganizationId(organizationId);
-        member.setGender(gender);
-        member.setAge(age);
-        member.setMobile(mobile);
-        member.setEmail(email);
-        memberService.updateMember(member);
-        memberService.updateRoleMember(roleId,member.getId());
-        model.addAttribute("msg", "修改成功");
-        return "msg";
+		try {
+			String Password = accountService.findAccountById(accountId).getPassword();
+			if(passwordService.encryptPassword(account.getAccountName(), password).equals(Password)) {
+				map.put("msg", "密码不能和之前的密码相同");
+				return map;
+			}else if(Password.equals(password)){
+				account.setPassword(password);
+			}else {
+				account.setPassword(password);
+				passwordService.encryptPassword(account);
+			}
+			accountService.updateAccount(account);
+			member.setAccountId(accountId);
+			member.setOrganizationId(organizationId);
+			member.setGender(gender);
+			member.setAge(age);
+			member.setMobile(mobile);
+			member.setEmail(email);
+			memberService.updateMember(member);
+			memberService.updateRoleMember(roleId,member.getId());
+			map.put("msg", "修改成功");
+		} catch (Exception e) {
+			map.put("msg", e);
+		}
+		return map;
     }
 
     @RequestMapping(value = "/{id}/delete", method = RequestMethod.DELETE)

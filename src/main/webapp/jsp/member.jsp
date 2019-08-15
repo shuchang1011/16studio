@@ -18,47 +18,6 @@
 	
 </head>
 <body>
-	<%-- <table>
-		<c:if test="${not empty member}">
-		<tr>
-			<td></td>
-			<td><form action="${pageContext.request.contextPath}/member/editMember/${member.getAccountId()}" method="get">
-            	  	<input type="submit" value="编辑信息"/>
-            </form></td>
-		</tr>
-		<tr>
-			<td>用户名:</td>
-			<td>${member.getAccount().getDisplayName()}</td>
-		</tr>
-		<tr>
-			<td>性别:</td>
-			<td>${member.getGender()}</td>
-		</tr>
-		<tr>
-			<td>年龄:</td>
-			<td>${member.getAge()}</td>
-		</tr>
-		<tr>
-			<td>所在机构:</td>
-			<c:if test="${not empty member.getOrganization() }"><td>${member.getOrganization()}</td></c:if>
-			
-		</tr>
-		<tr>
-			<td>手机:</td>
-			<td>${member.getMobile()}</td>
-		</tr>
-		<tr>
-			<td>E-mail:</td>
-			<td>${member.getEmail()}</td>
-		</tr>
-	</c:if>
-	<c:if test="${empty member }">
-		尚未编辑个人信息！<br>
-		<form action="${pageContext.request.contextPath}/member/editMember" method="get">
-        	  	<input type="submit" value="编辑信息"/>
-        </form>
-	</c:if>
-	</table> --%>
 	<div class="g_6 contents_header">
 		<h3 class=" tab_label">个人信息</h3>
 		<div><span class="label">Self_info</span></div>

@@ -1,8 +1,10 @@
 package com.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javafx.beans.binding.ObjectExpression;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.log4j.Logger;
@@ -15,6 +17,7 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,6 +30,8 @@ import com.entity.Account;
 import com.service.AccountService;
 import com.util.CustomerContextHolder;
 import com.wordnik.swagger.annotations.Api;
+
+import javax.servlet.http.HttpSession;
 
 @Api(value="restful",description="登陆Api")
 @Controller
@@ -66,22 +71,33 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value="/index")
-	public String index() {
+	public String index(HttpSession session,@RequestParam(value="msg",required = false)String msg, Model model) {
 		System.out.println("跳转index方法");
+		Account account = (Account)session.getAttribute("user");
+		if(msg!=null){
+			try {
+				msg = new String(msg.getBytes("iso8859-1"),"UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+		model.addAttribute("msg",msg);
+		model.addAttribute("user",account);
 		return "index";
 	}
 	
 	@ResponseBody
 	@RequestMapping(value="/logon",method=RequestMethod.POST)
-	public ModelAndView login(@RequestParam("username")String accountName,
-			@RequestParam("password")String password,ModelAndView mv) {
+	public Map<String,Object> login(@RequestParam("username")String accountName,
+									@RequestParam("password")String password, Model model) {
 		//设置默认数据源
 		System.out.println("进入Login方法");
-		CustomerContextHolder.setCustomerType(CustomerContextHolder.DATASOURCE_A); 
+		Map<String, Object> map = new HashMap<String, Object>();
+		CustomerContextHolder.setCustomerType(CustomerContextHolder.DATASOURCE_A);
 		if(accountName == null){
-			mv.addObject("message", "用户名不能为空");
-            mv.setViewName("login");
-            return mv;
+			map.put("msg", "用户名不能为空");
+            map.put("url", "login");
+            return map;
         }
         //主体,当前状态为没有认证的状态“未认证”
 		
@@ -102,23 +118,24 @@ public class LoginController {
             account.setMember(accountService.findPersonalDataById(account.getId()));
             account.setRole(accountService.findRole(account.getAccountName()));
             account.setOrganization(accountService.findOrganizationById(account.getId()));
-            mv.addObject("user",account);
-            mv.addObject("message", "登录成功！");
-            mv.setViewName("index");
+            model.addAttribute("user",account);
+            map.put("user",account);
+            map.put("msg", "登录成功！欢迎"+account.getDisplayName());
+            map.put("url", "index");
             logger.info("登陆系统");
         } catch (UnknownAccountException e) {
-            mv.addObject("message", "账号/密码不正确");
-            mv.setViewName("login");
+			map.put("msg", "账号/密码不正确");
+            map.put("url","login");
         	
         } catch(IncorrectCredentialsException e) {
-        	mv.addObject("message", "账号/密码不正确");
-        	mv.setViewName("login");
+			map.put("message", "账号/密码不正确");
+			map.put("url","login");
         	
         } catch(LockedAccountException e) {
-        	mv.addObject("message", "账号被锁定");
-        	mv.setViewName("login");
+			map.put("message", "账号被锁定");
+			map.put("url","login");
         }
-        return mv;
+        return map;
 		
 	}
 	

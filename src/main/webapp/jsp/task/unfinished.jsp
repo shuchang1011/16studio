@@ -94,11 +94,14 @@
 			            </td>
 			            <td style="width: 20%;">${list.createDate }</td>
 			            <td style="width: 20%;">${list.finishedDate }</td>
-			            <td style="width: 10%;"><form action="${pageContext.request.contextPath}/task/finishTask/${list.getId()}" method="get">
-			            	  	<input type="submit" value="完成" class="submitIt simple_buttons"/>
+			            <td style="width: 10%;"><form id="form1" action="${pageContext.request.contextPath}/task/finishTask" method="get" onsubmit="return false">
+			            	<input type="hidden" name="id" value="${list.getId()}" />
+							<input type="submit" value="完成" onclick="submitForm1()" class="submitIt simple_buttons"/>
 			            </form></td>
-			            <td style="width: 10%;"><form action="${pageContext.request.contextPath}/task/delete/${list.getId()}" method="get">
-			            	  	<input type="submit" value="删除" class="submitIt simple_buttons"/>
+			            <td style="width: 10%;"><form id="form2" action="${pageContext.request.contextPath}/task/delete" method="get" onsubmit="return false">
+							<input type="hidden" name="_method" value="delete" />
+							<input type="hidden" name="id" value="${list.getId()}" />
+							<input type="submit" value="删除" onclick="submitForm2()" class="submitIt simple_buttons"/>
 			            </form></td>
 			        </tr>
 				</c:forEach>
@@ -150,98 +153,42 @@
             </nav>
         </div>
 	</div>
-	<%-- <c:if test="${pageInfo.total != 0}">
-		<table>
-			<tr>
-				<td colspan="3"></td>
-				<td><form action="${pageContext.request.contextPath}/task/create" method="get">
-	            	  	<input type="submit" value="创建任务"/>
-	            </form></td>
-			</tr>
-			<tr>
-				<th>标题</th>
-				<th>任务内容</th>
-				<th>文件类型</th>
-				<th>负责村落</th>
-				<th>任务负责人</th>
-				<th>创建时间</th>
-				<th>完成时间</th>
-				<th>operation</th>
-			</tr>
-			<c:forEach items="${pageInfo.list}" var="list">
-				<tr>
-		            <td>${list.title }</td>
-		            <td>${list.content }</td>
-		            <td>${list.fileType }</td>
-		            <td>${list.village.getName() }</td>
-		            <td>
-		            	${list.member.get(0).getAccount().getDisplayName()}
-		            	<c:forEach items="${list.member}" var="m" begin="1">
-		            		,${m.getAccount().getDisplayName()}
-		            	</c:forEach>
-		            </td>
-		            <td>${list.createDate }</td>
-		            <td>${list.finishedDate }</td>
-		            <td><form action="${pageContext.request.contextPath}/task/finishTask/${list.getId()}" method="get">
-		            	  	<input type="submit" value="完成"/>
-		            </form></td>
-		            <td><form action="${pageContext.request.contextPath}/task/delete/${list.getId()}" method="get">
-		            	  	<input type="submit" value="删除"/>
-		            </form></td>
-		        </tr>
-			</c:forEach>
-		</table>
-	
-		<div class="col-md-6">
-            当前第 ${pageInfo.pageNum} 页.总共 ${pageInfo.pages} 页.一共 ${pageInfo.total} 条记录
-        </div>
- 
-        <!--点击分页-->
-        <div class="col-md-6">
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    
-                    <li><a href="${pageContext.request.contextPath}/task/unFinishedTaskView?pn=1">首页</a></li>
-                    
-                    <!--上一页-->
-                    <li>
-                        <c:if test="${pageInfo.hasPreviousPage}">
-                            <a href="${pageContext.request.contextPath}/task/unFinishedTaskView?pn=${pageInfo.pageNum-1}" aria-label="Previous">
-                                <span aria-hidden="true">«</span>
-                            </a>
-                        </c:if>
-                    </li>
- 
-                    <!--循环遍历连续显示的页面，若是当前页就高亮显示，并且没有链接-->
-                    <c:forEach items="${pageInfo.navigatepageNums}" var="page_num">
-                        <c:if test="${page_num == pageInfo.pageNum}">
-                            <li class="active"><a href="#">${page_num}</a></li>
-                        </c:if>
-                        <c:if test="${page_num != pageInfo.pageNum}">
-                            <li><a href="${pageContext.request.contextPath}/task/unFinishedTaskView?pn=${page_num}">${page_num}</a></li>
-                        </c:if>
-                    </c:forEach>
- 
-                    <!--下一页-->
-                    <li>
-                        <c:if test="${pageInfo.hasNextPage}">
-                            <a href="${pageContext.request.contextPath}/task/unFinishedTaskView?pn=${pageInfo.pageNum+1}"
-                               aria-label="Next">
-                                <span aria-hidden="true">»</span>
-                            </a>
-                        </c:if>
-                    </li>
-                    
-                    <li><a href="${pageContext.request.contextPath}/task/unFinishedTaskView?pn=${pageInfo.pages}">尾页</a></li>
-                </ul>
-            </nav>
-        </div>
-	</c:if>
-	<c:if test="${pageInfo.total == 0}">
-		无任务信息！<br>
-		<form action="${pageContext.request.contextPath}/task/create" method="get">
-        	  	<input type="submit" value="创建任务"/>
-        </form>
-	</c:if> --%>
+<script>
+	function submitForm1() {
+		$.ajax({            //几个参数需要注意一下
+			type: "GET",//方法类型
+			dataType: "json",//预期服务器返回的数据类型
+			url: "${pageContext.request.contextPath}/task/finishTask" ,//url
+			data: $('#form1').serialize(),
+			success: function (result) {
+				//console.log(result);//打印服务端返回的数据(调试用)
+				alert(result.msg);
+				setTimeout("location.href='${pageContext.request.contextPath}/task/unFinishedTaskView'", 2000);
+			},
+			error : function() {
+				alert("异常！");
+			}
+		});
+	}
+	function submitForm2() {
+		var deleteButton = window.confirm("确定要删除吗？")
+		if(deleteButton){
+			$.ajax({            //几个参数需要注意一下
+				type: "GET",//方法类型
+				dataType: "json",//预期服务器返回的数据类型
+				url: "${pageContext.request.contextPath}/task/delete" ,//url
+				data: $('#form2').serialize(),
+				success: function (result) {
+					//console.log(result);//打印服务端返回的数据(调试用)
+					alert(result.msg);
+					setTimeout("location.href='${pageContext.request.contextPath}/task/unFinishedTaskView'", 2000);
+				},
+				error : function() {
+					alert("异常！");
+				}
+			});
+		}
+	}
+</script>
 </body>
 </html>

@@ -23,11 +23,11 @@ public interface DocumentDao {
 	
 	public void deleteDocument(@Param("documentId")String documentId);
 	
-	public void submitTempDoc(@Param("tempDocId")String tempDocId);
+	public void submitTempDoc(@Param("tempDocId")String tempDocId,@Param("content")String content);
 	
-	public void tempDocPass(@Param("tempDocId")String tempDocId,@Param("state")String state);
+	public void tempDocPass(@Param("tempDocId")String tempDocId,@Param("state")String state,@Param("html")String content);
 	
-	public void tempDocUnPass(@Param("tempDocId")String tempDocId,@Param("state")String state);
+	public void tempDocUnPass(@Param("tempDocId")String tempDocId,@Param("state")String state,@Param("problem")String problem);
 	
 	public void archiveToDocument(TempDoc tempDoc);
 	
@@ -62,5 +62,6 @@ public interface DocumentDao {
 	List<Document> findByTitle(@Param("title")String title);
 	
 	List<Document> findAllByVillageIdAndCultureaspectId(@Param("villageId")String villageId,@Param("cultureaspectId")String cultureaspectId);
-	
+
+    public void submitDoc(@Param("id") String tempDocId);
 }

@@ -19,9 +19,11 @@ public interface DocumentService {
 	
 	public void deleteDocument(String documentId);
 	
-	public void submitTempDoc(String tempDocId);
+	public void submitTempDoc(String tempDocId,String contents);
+
+	public void submitDoc(String tempDocId);
 	
-	public void auditTempDoc(String tempDocId,String state);
+	public void auditTempDoc(String tempDocId,String state,String html,String problem);
 	
 	public void archiveTempDoc(String tempDocId,String state);
 	

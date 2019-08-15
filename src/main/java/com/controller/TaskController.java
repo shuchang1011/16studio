@@ -168,6 +168,20 @@ public class TaskController {
         model.addAttribute("msg", "新增成功");
         return "msg";
     }
+
+    @ResponseBody
+	@RequestMapping(value = "/createTask", method = RequestMethod.POST)
+	public Map<String,Object> createTask(HttpSession session,@RequestParam("memberId")String[] membersId,@ModelAttribute Task task) {
+		logger.info("创建任务");
+		Account account = (Account) session.getAttribute("user");
+		Map<String,Object> map = new HashMap<String, Object>();
+		String memberId = memberService.findOneByAccountId(account.getId()).getId();
+		task.setCreateMemberId(memberId);
+		task.setId(UUID.randomUUID().toString());
+		taskService.createTask(task,membersId);
+		map.put("msg","添加成功");
+		return map;
+	}
     
     @ResponseBody
     @RequestMapping(value="/getCultureaspect",method=RequestMethod.GET)
@@ -198,25 +212,42 @@ public class TaskController {
         return "msg";
     }
 
-    @RequestMapping(value = "/finishTask/{id}", method = RequestMethod.GET)
-    public String finishTask(@PathVariable("id")String id, Model model) {
+    @ResponseBody
+    @RequestMapping(value = "/finishTask", method = RequestMethod.GET)
+    public Map<String,Object> finishTask(@RequestParam("id")String id) {
     	logger.info("完成任务");
-    	taskService.FinishTask(id);
-    	Task task = taskService.findOne(id);
-    	List<TempDoc> tempDocList = documentService.findTempDocByVillageIdAndCultureaspectId(task.getVillageId(), task.getCultureaspectId());
-    	for (TempDoc tempDoc : tempDocList) {
-    		documentService.deleteTempDoc(tempDoc.getId());
+    	Map<String,Object> map = new HashMap<String, Object>();
+    	try{
+			Task task = taskService.findOne(id);
+			taskService.FinishTask(id);
+			List<TempDoc> tempDocList = documentService.findTempDocByVillageIdAndCultureaspectId(task.getVillageId(), task.getCultureaspectId());
+			for (TempDoc tempDoc : tempDocList) {
+				documentService.deleteTempDoc(tempDoc.getId());
+			}
+			map.put("msg","任务完成");
+		}catch (Exception e){
+    		map.put("msg",e);
 		}
-        model.addAttribute("msg", "任务完成");
-        return "msg";
+        return map;
     }
-    
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public String delete(@PathVariable("id") String id,Model model) {
+
+    @ResponseBody
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public Map<String,Object> delete(@RequestParam("id") String id) {
     	logger.info("删除任务");
-    	taskService.deleteTask(id);
-        model.addAttribute("msg", "删除成功");
-        return "msg";
+		Map<String,Object> map = new HashMap<String, Object>();
+		try {
+			Task task = taskService.findOne(id);
+			taskService.deleteTask(id);
+			List<TempDoc> tempDocList = documentService.findTempDocByVillageIdAndCultureaspectId(task.getVillageId(), task.getCultureaspectId());
+			for (TempDoc tempDoc : tempDocList) {
+				documentService.deleteTempDoc(tempDoc.getId());
+			}
+			map.put("msg", "删除成功");
+		} catch (Exception e) {
+			map.put("msg", e);
+		}
+		return map;
     }
 	
 }

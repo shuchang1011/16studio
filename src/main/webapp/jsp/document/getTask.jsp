@@ -41,14 +41,10 @@
 	</div>
 	<div class="g_6 contents_options">
 		<div class="simple_buttons" id="valid">
-			<div class="bwIcon i_16_settings">
-				<form action="${pageContext.request.contextPath}/document/updateTemp/${tempDoc.get(0).getId()}" method="get">
-		    	  	<input type="submit" value="编辑" class="btn"/>
-		   		</form>
-            </div>
             <div class="bwIcon i_16_settings">
-				<form action="${pageContext.request.contextPath}/document/submitTempDoc/${tempDoc.get(0).getId()}" method="post">
+				<form id="form1" action="${pageContext.request.contextPath}/document/submitTempDoc/${tempDoc.get(0).getId()}" method="post" onsubmit="return false">
 		    	  	<input type="hidden" name="_method" value="put" />
+					<input type="hidden" name="html" value="" />
 		    	  	<input type="submit" value="提交" class="btn"/>
 		   		</form>
             </div>
@@ -118,73 +114,71 @@
 										<input type="hidden" name="swfName" value="${list.getId() }"/>
 							    	  	<input type="submit" value="预览"  class="submitIt simple_buttons"/>
 							    	</form>
-							    	<a class="submitIt simple_buttons" href="javascript:POBrowser.openWindowModeless('${pageContext.request.contextPath}/pageOffice/pdf/${list.getId() }','width=1200px;height=800px;');">编辑</a>
+									<button onclick="showEditor()" class="submitIt simple_buttons">编辑</button>
+							    	<%--<a class="submitIt simple_buttons" href="javascript:POBrowser.openWindowModeless('${pageContext.request.contextPath}/pageOffice/pdf/${list.getId() }','width=1200px;height=800px;');">编辑</a>--%>
 							    </span>
 							</div>
 						</div>
+						<textarea id="myEditor" style="width: 100%; height: 285px; display: none;">${list.getContent() }</textarea>
 					</c:forEach>
 				</c:otherwise>
 			</c:choose>
 		</div>
 	</div>
-	<%-- <p>标题：${document.getTitle()}</p>
-	<p>描述：${document.getDescription()}</p>
-	<p>文件类型：${document.getType()}</p>
-	<form action="${pageContext.request.contextPath}/document/download" method="get">
-    	  	<input type="hidden" name="path" value="${document.getPath() }"/>
-    	  	<input type="hidden" name="title" value="${document.getTitle() }"/>
-    	  	<input type="submit" value="下载附件"/>
-    </form>
-	<c:if test="${document.getType() eq 'image' }">
-		<img alt="${document.getTitle() }" src="${pageContext.request.contextPath}/document/fileDownLoad/${filename}/${document.getType()}">
-	</c:if>
-	<c:if test="${document.getType() eq 'video' }">
-		<video width="400" height="300" src="${pageContext.request.contextPath}/document/fileDownLoad/${filename}/${document.getType()}" type="video" controls>
-	</c:if>
-	<c:if test="${document.getType() eq 'file' }">
-		<form action="${pageContext.request.contextPath}/document/preview" method="get">
-			<input type="hidden" name="path" value="${document.getPath() }"/>
-			<input type="hidden" name="type" value="${document.getType() }"/>
-    	  	<input type="submit" value="预览"/>
-    	</form>
-	</c:if> --%>
 <script>
-var step = 1;
-var state = "${tempDoc.get(0).getState()}";
-var init = function(){
-	
-	if((state == "")||(state == "审核中")||(state == "审核未通过")||(state == "归档未通过")){
-		step = 1;
-	}else if(state == "归档中"){
-		step = 2;
-	}else{
-		step = 3;
+	var step = 1;
+	var state = "${tempDoc.get(0).getState()}";
+	var init = function(){
+
+		if((state == "")||(state == "审核中")||(state == "审核未通过")||(state == "归档未通过")){
+			step = 1;
+		}else if(state == "归档中"){
+			step = 2;
+		}else{
+			step = 3;
+		}
+	};
+	init();
+	var step1=new SetStep({
+		content:'.stepCont1',
+		showBtn:false,
+		clickAble:false,
+		curStep:step
+	});
+	var ue = UE.getEditor('myEditor');
+
+	function submitForm() {
+		var html = UE.getEditor('myEditor').getContent();
+		document.getElementById("html").value = html;
+		$.ajax({            //几个参数需要注意一下
+			type: "POST",	//方法类型
+			dataType: "json",//预期服务器返回的数据类型
+			url: "${pageContext.request.contextPath}/document/submitTempDoc/${tempDoc.get(0).getId()}" ,//url
+			data: $('#form1').serialize(),
+			success: function (result) {
+				//console.log(result);//打印服务端返回的数据(调试用)
+				alert(result.msg);
+				setTimeout("location.href='${pageContext.request.contextPath}/document/showMyTempDoc'", 2000);
+			},
+			error : function() {
+				alert("异常！");
+			}
+		});
 	}
-};
-init();
-var step1=new SetStep({
-	content:'.stepCont1',
-	showBtn:false,
-	clickAble:false,
-	curStep:step
-});
-var ue = UE.getEditor('myEditor');
 
-function submitForm() {
-	var html = UE.getEditor('myEditor').getContent();
-	//alert(html);
-	document.getElementById("html").value = html;
-}
-
-var editor = new UE.ui.Editor();
-editor.render('editor');
-
-editor.addListener( 'ready', function(edt) {
-	var content_old = $('#content').html();
-	if(content_old!=''){
-		editor.execCommand('insertHtml', content_old);
+	function showEditor() {
+		jQuery("#myEditor").show();
 	}
- });
+
+	var editor = new UE.ui.Editor();
+	editor.render('editor');
+
+	editor.addListener( 'ready', function(edt) {
+		var content_old = $('#content').html();
+		if(content_old!=''){
+			editor.execCommand('insertHtml', content_old);
+		}
+	 });
 </script>
    
 </body>
